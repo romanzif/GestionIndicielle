@@ -8,14 +8,17 @@ namespace GestionIndicielle.Models
 {
     class Portfolio
     {
-        public Matrix PortfolioMatrix;
-        public Matrix BenchmarkMatrix;
-
+        public Matrice PortfolioMatrix;
+        public double[,] BenchmarkMatrix;
+        public double[,] BenchmarkRendMatrix;
         public Portfolio(double[,] portMat, double[,] benchMat)
         {
-            PortfolioMatrix = new Matrix(portMat);
-            BenchmarkMatrix = new Matrix(benchMat);
+            PortfolioMatrix = new Matrice(portMat);
+            BenchmarkMatrix = benchMat;
+            BenchmarkRendMatrix = Matrice.computeRMatrix(BenchmarkMatrix);
         }
+
+
 
         public void rebalancement(double[,] rebMat)
         {

@@ -9,8 +9,8 @@ namespace GestionIndicielle.ViewModels
 {
     class MainWindowViewModel : BindableBase
     {
-        private Matrix _mat;
-        public Matrix Mat
+        private Matrice _mat;
+        public Matrice Mat
         {
             get { return _mat; }
             set { 
@@ -18,9 +18,6 @@ namespace GestionIndicielle.ViewModels
                     OnPropertyChanged(() => this.Mat);
                 }
         }
-
-        public MainWindowViewModel()
-        {
             
             //double [,] tmp = { {1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
             //Mat = new Matrix(tmp);
@@ -52,8 +49,8 @@ namespace GestionIndicielle.ViewModels
                 DateTime tFin = new DateTime(2006, 1, 17, 0, 0, 0);
                 DateTime tDebut= new DateTime(2006,1,2,0,0,0);
 
-                D = new Matrice(DaysIgnoreWeekends(tDebut,tFin), 29);
-                I = new Matrice(DaysIgnoreWeekends(tDebut, tFin), 1);
+                D = new Matrice(new double[DaysIgnoreWeekends(tDebut,tFin), 29]);
+                I = new Matrice(new double[DaysIgnoreWeekends(tDebut, tFin), 1]);
                 Parse.LoadPrice(D,tDebut,tFin);
                 Parse.LoadIndice(I,tDebut,tFin);
             }
