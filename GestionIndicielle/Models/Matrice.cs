@@ -8,14 +8,14 @@ using System.Windows.Media;
 
 namespace GestionIndicielle
 {
-    class Matrix
+    class Matrice
     {
         public int Row { get; private set; }
         public int Col { get; private set; }
 
         public double[,] Mat { get; set; }
 
-        public Matrix(int row, int col)
+        public Matrice(int row, int col)
         {
             Row = row;
             Col = col;
