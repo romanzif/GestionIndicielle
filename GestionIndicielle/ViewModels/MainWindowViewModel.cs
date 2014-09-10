@@ -2,26 +2,83 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Prism.Mvvm;
+using System.Windows.Input;
 using GestionIndicielle.Models;
 using GestionIndicielle.Parser;
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Mvvm;
+
 
 namespace GestionIndicielle.ViewModels
 {
-    class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBase
     {
-        private Matrice _mat;
-        public Matrice Mat
+        public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
+        public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
+        private string _periodeEstimation, _periodeRebalancement,_budget;
+        private int _perEstimation, _perRebalancement,_budg;
+
+
+        public string  PeriodeEstimation
         {
-            get { return _mat; }
-            set { 
-                    _mat = value;
-                    OnPropertyChanged(() => this.Mat);
+            get { return _periodeEstimation; }
+            set
+            {
+                if (_periodeEstimation != value)
+                {
+                    _periodeEstimation = value;
+                    OnPropertyChanged(() =>PeriodeEstimation);
+                    _perEstimation = int.Parse(_periodeEstimation);
+                };
+            }
+ 
+        }
+
+        public string PeriodeRebalancement
+        {
+            get { return _periodeRebalancement; }
+
+            set
+            {
+                if (_periodeRebalancement != value)
+                {
+                    _periodeRebalancement = value;
+                    OnPropertyChanged(()=>PeriodeRebalancement);
+                    _perRebalancement = int.Parse(_periodeRebalancement);
                 }
+            }
+        }
+
+        public string Budget
+        {
+            get { return _budget; }
+            set
+            {
+                if(_budget != value)
+                {
+                    _budget = value;
+                    OnPropertyChanged(() => Budget);
+                    _budg = int.Parse(_budget);
+                };
+            }
+
+        }
+        public ICommand Selection { get; private set; }
+
+        public Matrice D, I;
+
+         public MainWindowViewModel()
+         {
+            Selection = new DelegateCommand(Click);
+
+            D = new Matrice(new double[DaysIgnoreWeekends(Tdebut,Tfin), 29]);
+            I = new Matrice(new double[DaysIgnoreWeekends(Tdebut, Tfin), 1]);
+            Parse.LoadPrice(D,Tdebut,Tfin);
+            Parse.LoadIndice(I,Tdebut,Tfin);
         }
             
             //double [,] tmp = { {1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
             //Mat = new Matrix(tmp);
-
 
             //double[,] myCovMatrix = Mat.MatR;
             //Console.WriteLine("Covariance matrix:");
@@ -42,31 +99,53 @@ namespace GestionIndicielle.ViewModels
             //}
             //Console.WriteLine("Type enter to exit");
             //Console.Read();
-            public Matrice D,I;
-        
-            public MainWindowViewModel()
-            {
-                DateTime tFin = new DateTime(2006, 1, 17, 0, 0, 0);
-                DateTime tDebut= new DateTime(2006,1,2,0,0,0);
+        private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
+        {
+           TimeSpan days = tFin.Subtract(tDebut);
+           int count = 0;
+           for (int a = 0; a < days.Days + 1; a++)
+           {
+               if (tDebut.DayOfWeek != DayOfWeek.Saturday && tDebut.DayOfWeek != DayOfWeek.Sunday)
+                   count++;
+               tDebut = tDebut.AddDays(1.0);
+           }
+           Console.Write(count);
+           return count;
+        }
 
-                D = new Matrice(new double[DaysIgnoreWeekends(tDebut,tFin), 29]);
-                I = new Matrice(new double[DaysIgnoreWeekends(tDebut, tFin), 1]);
-                Parse.LoadPrice(D,tDebut,tFin);
-                Parse.LoadIndice(I,tDebut,tFin);
-            }
+        public void Begin(DateTime d)
+        {
+            Tdebut = d;
+        }
 
-            private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
-            {
-               TimeSpan days = tFin.Subtract(tDebut);
-               int count = 0;
-               for (int a = 0; a < days.Days + 1; a++)
-               {
-                   if (tDebut.DayOfWeek != DayOfWeek.Saturday && tDebut.DayOfWeek != DayOfWeek.Sunday)
-                       count++;
-                   tDebut = tDebut.AddDays(1.0);
-               }
-               Console.Write(count);
-               return count;
-            }
+        public void End(DateTime d)
+        {
+            Tfin = d;
+        }
+
+        public void Click()
+        {
+            SelectBalancement();
+            SelectEstimation();
+            SelectBudget();
+        }
+
+        private void SelectBalancement()
+        {
+            //PeriodeRebalancement = Rebalancement.selectedText();
+            Console.Write("Balancement");
+        }
+
+        private void SelectEstimation()
+        {
+           // PeriodeEstimation = Estimation.selectedText();
+            Console.Write("Estimation");
+        }
+
+        private void SelectBudget()
+        {
+            // PeriodeEstimation = Estimation.selectedText();
+            Console.Write("Budget");
+        }
     }
 }

@@ -104,6 +104,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="packages.config" />
     <None Include="parseur.dbml.layout">
       <DependentUpon>parseur.dbml</DependentUpon>
     </None>
