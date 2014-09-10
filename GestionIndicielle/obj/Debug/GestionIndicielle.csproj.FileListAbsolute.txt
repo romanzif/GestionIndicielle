@@ -12,3 +12,21 @@ C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\bin\Debug\
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\bin\Debug\GestionIndicielle.pdb
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.exe
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.pdb
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\GestionIndicielle.exe.config
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.exe
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.pdb
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\GestionIndicielle.exe
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\GestionIndicielle.pdb
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\Microsoft.Practices.Prism.Mvvm.Desktop.dll
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\Microsoft.Practices.Prism.Mvvm.dll
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\Microsoft.Practices.Prism.SharedInterfaces.dll
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\Microsoft.Practices.Prism.Mvvm.xml
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\bin\Debug\Microsoft.Practices.Prism.SharedInterfaces.xml
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.csprojResolveAssemblyReference.cache
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\MainWindow.baml
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\MainWindow.g.cs
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\App.g.cs
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle_MarkupCompile.cache
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.g.resources
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.Properties.Resources.resources
+C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.csproj.GenerateResource.Cache
