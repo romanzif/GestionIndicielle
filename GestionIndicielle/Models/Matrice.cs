@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 
-namespace GestionIndicielle
+namespace GestionIndicielle.Models
 {
     class Matrice
     {
@@ -22,6 +16,16 @@ namespace GestionIndicielle
             Mat=new double[row,col];
         }
 
-
+        public void Print()
+        {
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Col; j++)
+                {
+                    Console.Write(Mat[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
