@@ -12,7 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+<<<<<<< HEAD
 using GestionIndicielle.ViewModel;
+=======
+using GestionIndicielle.ViewModels;
+using GestionIndicielle.ViewModels;
+>>>>>>> c456ee509aa6525020892ecfbddcc947d6ee2a9d
 
 namespace GestionIndicielle
 {
@@ -24,7 +29,11 @@ namespace GestionIndicielle
         public MainWindow()
         {
             InitializeComponent();
+<<<<<<< HEAD
             this.DataContext = new MainWindowViewModel();
+=======
+            DataContext = new MainWindowViewModel();
+>>>>>>> c456ee509aa6525020892ecfbddcc947d6ee2a9d
         }
     }
 }
