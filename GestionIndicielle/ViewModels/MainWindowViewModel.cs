@@ -11,11 +11,25 @@ namespace GestionIndicielle.ViewModels
         
          public MainWindowViewModel()
         {
-            DateTime tFin = new DateTime(2006, 1, 10, 0, 0, 0);
+            DateTime tFin = new DateTime(2006, 1, 17, 0, 0, 0);
             DateTime tDebut= new DateTime(2006,1,2,0,0,0);
 
-            D = new Matrice(7, 29);
+            D = new Matrice(DaysIgnoreWeekends(tDebut,tFin), 29);
              Parse.Load(D,tDebut,tFin);
+        }
+
+        private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
+        {
+           TimeSpan days = tFin.Subtract(tDebut);
+           int count = 0;
+           for (int a = 0; a < days.Days + 1; a++)
+           {
+               if (tDebut.DayOfWeek != DayOfWeek.Saturday && tDebut.DayOfWeek != DayOfWeek.Sunday)
+                   count++;
+               tDebut = tDebut.AddDays(1.0);
+           }
+           Console.Write(count);
+           return count;
         }
     }
 }
