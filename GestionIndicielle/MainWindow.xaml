@@ -1,17 +1,15 @@
 ﻿<Window x:Class="GestionIndicielle.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="350" Width="525">
+        Height="634" Width="940">
     <Grid>
-        <Button Content="Salut" Margin="0,0,455,297">
-        </Button>
-        
+
         <DatePicker x:Name="Date_de_début" HorizontalAlignment="Left"
             SelectedDate="{Binding tDebut, Mode=TwoWay}"
 		    Text="Date de début"
-            Margin="0,286,0,0"
+            Margin="10,569,0,0"
 		    VerticalAlignment="Top"
-		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281">
+		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281" DisplayDateStart="2006-01-02">
             <DatePicker.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
                     <GradientStop Color="#FFA3AEB9" Offset="0"/>
@@ -22,10 +20,12 @@
             </DatePicker.BorderBrush>
         </DatePicker>
         <DatePicker x:Name="Date_de_fin" HorizontalAlignment="Right"
-		    Margin="0,286,214,0"
+		    Margin="0,570,610,0"
             Text="Date de fin"
 		    VerticalAlignment="Top"
-		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83"/>
-        
+		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17"/>
+        <TextBox HorizontalAlignment="Left" Height="24" Margin="680,570,0,0" TextWrapping="Wrap" Text="Période de rebalancement" VerticalAlignment="Top" Width="242"/>
+        <TextBox HorizontalAlignment="Left" Height="21" Margin="680,533,0,0" TextWrapping="Wrap" Text="Fenêtre d'estimation" VerticalAlignment="Top" Width="242"/>
+
     </Grid>
 </Window>

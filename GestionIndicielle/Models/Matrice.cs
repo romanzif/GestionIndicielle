@@ -2,7 +2,7 @@
 
 namespace GestionIndicielle.Models
 {
-    class Matrice
+    public class Matrice
     {
         public int Row { get; private set; }
         public int Col { get; private set; }
