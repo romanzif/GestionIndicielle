@@ -22,7 +22,7 @@ namespace GestionIndicielle.Models
             {
                 for (int j = 0; j < Col; j++)
                 {
-                    Console.Write(Mat[i, j] + " ");
+                    Console.Write(Mat[i,j] +  " ");
                 }
                 Console.WriteLine();
             }

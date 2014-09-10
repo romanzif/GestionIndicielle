@@ -7,7 +7,7 @@ namespace GestionIndicielle.ViewModels
 {
     class MainWindowViewModel : Window
     {
-        private Matrice D;
+        public Matrice D,I;
         
          public MainWindowViewModel()
         {
@@ -15,7 +15,9 @@ namespace GestionIndicielle.ViewModels
             DateTime tDebut= new DateTime(2006,1,2,0,0,0);
 
             D = new Matrice(DaysIgnoreWeekends(tDebut,tFin), 29);
-             Parse.Load(D,tDebut,tFin);
+            I = new Matrice(DaysIgnoreWeekends(tDebut, tFin), 1);
+            Parse.LoadPrice(D,tDebut,tFin);
+            Parse.LoadIndice(I,tDebut,tFin);
         }
 
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
