@@ -108,7 +108,7 @@ namespace GestionIndicielle.ViewModels
         public double[,] D, I;
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
-        public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
+        public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
 
         public MainWindowViewModel()
@@ -116,7 +116,7 @@ namespace GestionIndicielle.ViewModels
             Selection = new DelegateCommand(Click);
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            PeriodeEstimation = "100"; // 2semaines 
+            PeriodeEstimation = "5"; // 2semaines 
             PeriodeRebalancement = "45"; //2mois
             Budget = "100";
             Parse.LoadPrice(D, Tdebut, Tfin);
