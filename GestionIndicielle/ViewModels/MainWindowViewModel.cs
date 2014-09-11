@@ -283,10 +283,7 @@ namespace GestionIndicielle.ViewModels
             PlotModel2.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             PlotModel2.LegendBorder = OxyColors.Black;
 
-            var dateAxis2 = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
-            PlotModel2.Axes.Add(dateAxis2);
-            var valueAxis2 = new OxyPlot.Axes.LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
-            PlotModel2.Axes.Add(valueAxis2);
+  
         }
 
         private void LoadData(double[] valPortef, double [] valBenchmark)
@@ -307,8 +304,8 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel = tmp;
-            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
-        
+            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
+            this.PlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20});
         }
 
         private void LoadData2(double[] valPortef, double[] valBenchmark)
@@ -330,6 +327,7 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel2 = tmp;
+            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
         }
       
     }
