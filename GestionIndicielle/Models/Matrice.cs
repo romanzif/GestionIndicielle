@@ -16,7 +16,7 @@ namespace GestionIndicielle.Models
                 MatR = computeRMatrix(_mat);
                 CovMat = computeCovarianceMatrix(MatR);
                 MatRMoyen = computeRMoyenMatrix(MatR);
-                WeightsVect = computeWeightedVector(MatRMoyen, CovMat, Mat);
+                //WeightsVect = computeWeightedVector(MatRMoyen, CovMat, Mat);
             }
         }
 
