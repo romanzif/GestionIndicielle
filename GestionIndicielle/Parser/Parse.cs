@@ -24,7 +24,8 @@ namespace GestionIndicielle.Parser
             {
                     IQueryable<double> values = from n in pdc.HistoComponents
                     where DateTime.Compare(n.date, tFin ) <=0  && DateTime.Compare(n.date,tDeb)>=0
-                    select  n.value;
+                    orderby  n.name
+                    select n.value;
 
                 IEnumerator<double> e=new DoubleCollection.Enumerator();
                 e = values.GetEnumerator();
@@ -46,8 +47,9 @@ namespace GestionIndicielle.Parser
             using (parseurDataContext pdc = new parseurDataContext())
             {
                 IQueryable<double> values = from n in pdc.HistoIndices
-                                            where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0
-                                            select n.value;
+                    where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0
+                    orderby n.name  
+            select n.value;
 
                 IEnumerator<double> e = new DoubleCollection.Enumerator();
                 e = values.GetEnumerator();
