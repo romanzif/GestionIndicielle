@@ -116,7 +116,7 @@ namespace GestionIndicielle.ViewModels
             Selection = new DelegateCommand(Click);
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            PeriodeEstimation = "5"; // 2semaines 
+            PeriodeEstimation = "100"; // 2semaines 
             PeriodeRebalancement = "45"; //2mois
             Budget = "100";
             Parse.LoadPrice(D, Tdebut, Tfin);
