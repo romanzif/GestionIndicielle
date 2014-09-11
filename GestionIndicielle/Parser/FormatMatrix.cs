@@ -7,47 +7,58 @@ using GestionIndicielle.Models;
 
 namespace GestionIndicielle.Parser
 {
-    class FormatMatrix
+    public class FormatMatrix
     {
-        public List<double[,]> EstimationMatrixList;
-        public List<double[,]> RebalencementMatrixList;
+        private double[,] _fullDataMatrix { get; set; }
+        private int _estimationWindow { get; set; }
+        private int _rebalancementPeriode { get; set; }
+        public List<double[,]> EstimationMatrixList { get; set; }
+        public List<double[,]> RebalancementMatrixList { get; set; }
 
-        
-
-        public double[,] computePortfolio(double[,] assetsPrices, double[] weights)
+        public FormatMatrix(double[,] initMatrix, int estimationWindow, int rebalancementPeriod)
         {
-            int dataSize = assetsPrices.GetLength(0);
-            int nbAssets = assetsPrices.GetLength(1);
-            var res = new double[dataSize, nbAssets];
-            for (int j = 0; j < nbAssets; j++)
+            _fullDataMatrix = initMatrix;
+            _estimationWindow = estimationWindow;
+            _rebalancementPeriode = rebalancementPeriod;
+            EstimationMatrixList = new List<double[,]>();
+            RebalancementMatrixList = new List<double[,]>();
+            generateEstimationWindowList();
+            generateRebalencementList();
+        }
+
+        public double[,] generateBabyMatrixByCopyPasteOfLines(int firstIndex, int lastIndex)
+        {
+            int nbAssets = _fullDataMatrix.GetLength(1);
+            var res = new double[lastIndex - firstIndex, nbAssets];
+            for (int i = firstIndex; i < lastIndex; i++)
             {
-                for (int i = 0; i < dataSize; i++)
+                for (int j = 0; j < nbAssets; j++)
                 {
-                    res[i, j] = assetsPrices[i, j] * weights[j];
+                    res[i-firstIndex, j] = _fullDataMatrix[i, j];
                 }
             }
             return res;
         }
 
-
-        public void ComputeEstimationRebalencementCycle(double[,] assetsPrices1, double[,] assetsPrices2,
-            double[,] benchmark1, double[,] benchmark2)
+        public void generateEstimationWindowList()
         {
-            var port = new Portfolio(assetsPrices1, benchmark1);
-
-            //appel ComputeEstimationPortfolio et ComputeRebalencement
+            int index = _estimationWindow;
+            while (index < _fullDataMatrix.GetLength(0))
+            {
+                EstimationMatrixList.Add(generateBabyMatrixByCopyPasteOfLines(index-_estimationWindow,index));
+                index += _rebalancementPeriode;
+            }
         }
-        //public double[,] ComputeEstimationPortfolio(double[,] assetsPrices, double[,] benchmark)
-        //{
 
-        //    var port = new Portfolio(assetsPrices, benchmark);
-
-        //}
-
-        public void ComputeRebalencement(double[,] assetsPrices, double[,] benchmark)
+        public void generateRebalencementList()
         {
-
-
+            int index = _estimationWindow;
+            while (index + _rebalancementPeriode < _fullDataMatrix.GetLength(0))
+            {
+                RebalancementMatrixList.Add(generateBabyMatrixByCopyPasteOfLines(index,index+_rebalancementPeriode));
+                index += _rebalancementPeriode;
+            }
         }
+
     }
 }

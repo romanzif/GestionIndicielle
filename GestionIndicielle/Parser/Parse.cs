@@ -18,7 +18,7 @@ namespace GestionIndicielle.Parser
     class Parse
     {
         
-        public static void LoadPrice(Matrice data,DateTime tDeb, DateTime tFin)
+        public static void LoadPrice(double[,] data,DateTime tDeb, DateTime tFin)
         {
             using (parseurDataContext pdc = new parseurDataContext())
             {
@@ -29,19 +29,18 @@ namespace GestionIndicielle.Parser
                 IEnumerator<double> e=new DoubleCollection.Enumerator();
                 e = values.GetEnumerator();
                 e.MoveNext();
-                for (int j = 0; j < data.Col; j++)
+                for (int j = 0; j < data.GetLength(1); j++)
                 {
-                    for (int i = 0; i < data.Row; i++)
+                    for (int i = 0; i < data.GetLength(0); i++)
                     {
-                        data.Mat[i,j] = e.Current;
+                        data[i,j] = e.Current;
                         e.MoveNext();   
                     }
                 }
             }
-            data.Print();
         }
 
-        public static void LoadIndice(Matrice data, DateTime tDeb, DateTime tFin)
+        public static void LoadIndice(double[,] data, DateTime tDeb, DateTime tFin)
         {
             using (parseurDataContext pdc = new parseurDataContext())
             {
@@ -52,17 +51,29 @@ namespace GestionIndicielle.Parser
                 IEnumerator<double> e = new DoubleCollection.Enumerator();
                 e = values.GetEnumerator();
                 e.MoveNext();
-                for (int j = 0; j < data.Col; j++)
+                for (int j = 0; j < data.GetLength(1); j++)
                 {
-                    for (int i = 0; i < data.Row; i++)
+                    for (int i = 0; i < data.GetLength(0); i++)
                     {
-                        data.Mat[i, j] = e.Current;
+                        data[i, j] = e.Current;
                         e.MoveNext();
                     }
                 }
             }
-            data.Print();
             
         }
+
+        public void Print(int Row,int Col,double[,] Mat)
+        {
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Col; j++)
+                {
+                    Console.Write(Mat[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+
     }
 }

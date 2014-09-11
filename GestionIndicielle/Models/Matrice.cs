@@ -16,7 +16,18 @@ namespace GestionIndicielle.Models
                 MatR = computeRMatrix(_mat);
                 CovMat = computeCovarianceMatrix(MatR);
                 MatRMoyen = computeRMoyenMatrix(MatR);
-                //WeightsVect = computeWeightedVector(MatRMoyen, CovMat, Mat);
+                WeightsVect = computeWeightedVector(MatRMoyen, CovMat, Mat);
+            }
+        }
+
+        private double[,] _benchMat;
+
+        public double[,] BenchMat
+        {
+            get { return _benchMat; }
+            set
+            {
+                _benchMat = value;
             }
         }
 
@@ -27,12 +38,22 @@ namespace GestionIndicielle.Models
         public double[,] MatR { get; set; }
         public double[,] CovMat { get; set; }
 
-        public int Row { get; set; }
+        public double[,] MatTotal { get; set; }
 
-        public int Col { get; set; }
-
-        public Matrice(double[,] initMat)
+        public Matrice(double[,] initMat, double[,]benchMat)
         {
+            BenchMat = benchMat;
+            MatTotal = new double[initMat.GetLength(0),initMat.GetLength(1)+1];
+            for (int i = 0; i < initMat.GetLength(0); i++)
+            {
+                MatTotal[i, initMat.GetLength(1)] = benchMat[i, 0];
+                for (int j = 0; j < initMat.GetLength(1); j++)
+                {
+                    MatTotal[i, j] = initMat[i, j];
+                }
+            }
+            MatTotal = computeRMatrix(MatTotal);
+            MatTotal = computeCovarianceMatrix(MatTotal);
             Mat = initMat;
         }
 
@@ -84,7 +105,6 @@ namespace GestionIndicielle.Models
             int returnFromNorm = NORMmodelingCov(ref dataSize, ref nbAssets, returns, covMatrix, ref info);
             if (returnFromNorm != 0)
             {
-
                 throw new Exception(); // Check out what went wrong here
             }
             return covMatrix;
@@ -109,12 +129,18 @@ namespace GestionIndicielle.Models
         );
 
 
-        public static double[] computeWeightedVector(double[] returns, double[,] covMat, double[,] mat)
+        public double[] computeWeightedVector(double[] returns, double[,] covMat, double[,] mat)
         {
             int nbAssets = mat.GetLength(1);
-            double benchmarkExpectedReturns = 0;
             int nbEqConst = 1;
             int nbIneqConst = 0;
+            double[,] benchRMatrix = computeRMatrix(BenchMat);
+            double benchExpectedReturns = computeRMoyenMatrix(benchRMatrix)[0];
+            var benchCov = new double[nbAssets];
+            for (int i = 0; i < nbAssets; i++)
+            {
+                benchCov[i] = MatTotal[i, MatTotal.GetLength(1) - 1];
+            }
             var C = new double[nbAssets,nbEqConst+nbIneqConst];
             for (int i = 0; i < C.GetLength(0); i++)
             {
@@ -132,7 +158,7 @@ namespace GestionIndicielle.Models
             int info = 0;
             var optimalWeights = new double[nbAssets];
 
-            int returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, returns, ref benchmarkExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+            int returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
             if (returnFromNorm != 0)
             {
                 throw new Exception(); // Check out what went wrong here
@@ -140,17 +166,7 @@ namespace GestionIndicielle.Models
             return optimalWeights;
         }
 
-        public void Print()
-        {
-            for (int i = 0; i < Row; i++)
-            {
-                for (int j = 0; j < Col; j++)
-                {
-                    Console.Write(Mat[i,j] +  " ");
-                }
-                Console.WriteLine();
-            }
-        }
+        
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Prism.Mvvm;
@@ -13,12 +14,7 @@ namespace GestionIndicielle.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
-        public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private string _periodeEstimation, _periodeRebalancement,_budget;
-        private int _perEstimation, _perRebalancement,_budg;
-
-
         public string  PeriodeEstimation
         {
             get { return _periodeEstimation; }
@@ -28,12 +24,10 @@ namespace GestionIndicielle.ViewModels
                 {
                     _periodeEstimation = value;
                     OnPropertyChanged(() =>PeriodeEstimation);
-                    _perEstimation = int.Parse(_periodeEstimation);
                 };
             }
  
         }
-
         public string PeriodeRebalancement
         {
             get { return _periodeRebalancement; }
@@ -44,11 +38,9 @@ namespace GestionIndicielle.ViewModels
                 {
                     _periodeRebalancement = value;
                     OnPropertyChanged(()=>PeriodeRebalancement);
-                    _perRebalancement = int.Parse(_periodeRebalancement);
                 }
             }
         }
-
         public string Budget
         {
             get { return _budget; }
@@ -58,47 +50,33 @@ namespace GestionIndicielle.ViewModels
                 {
                     _budget = value;
                     OnPropertyChanged(() => Budget);
-                    _budg = int.Parse(_budget);
                 };
             }
 
         }
+
         public ICommand Selection { get; private set; }
+        public double[,] D, I;
+        public FormatMatrix FormatedBigMatrix;
+        public FormatMatrix FormatedBenchMatrix;
+        public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
+        public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
 
-        public Matrice D, I;
-
-         public MainWindowViewModel()
-         {
+        public MainWindowViewModel()
+        {
             Selection = new DelegateCommand(Click);
-
-            D = new Matrice(new double[DaysIgnoreWeekends(Tdebut,Tfin), 29]);
-            I = new Matrice(new double[DaysIgnoreWeekends(Tdebut, Tfin), 1]);
-            Parse.LoadPrice(D,Tdebut,Tfin);
-            Parse.LoadIndice(I,Tdebut,Tfin);
+            D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
+            I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
+            PeriodeEstimation = "100"; // 2semaines 
+            PeriodeRebalancement = "45"; //2mois
+            Budget = "100";
+            Parse.LoadPrice(D, Tdebut, Tfin);
+            Parse.LoadIndice(I, Tdebut, Tfin);
+            FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
+            FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
+            var estMatrix = new Matrice(FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First());
         }
-            
-            //double [,] tmp = { {1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
-            //Mat = new Matrix(tmp);
-
-            //double[,] myCovMatrix = Mat.MatR;
-            //Console.WriteLine("Covariance matrix:");
-            //for (int i = 0; i < myCovMatrix.GetLength(0); i++)
-            //{
-            //    for (int j = 0; j < myCovMatrix.GetLength(0); j++)
-            //    {
-            //        Console.WriteLine("Cov(" + i + "," + j + ")=" + myCovMatrix[i, j]);
-
-            //    }
-            //}
-
-            //double[] myRMoy = Mat.MatRMoyen;
-            //Console.WriteLine("RMoyMatrix:");
-            //for (int i = 0; i < myRMoy.GetLength(0); i++)
-            //{
-            //        Console.WriteLine("Cov(" + i + ")" + myRMoy[i]);
-            //}
-            //Console.WriteLine("Type enter to exit");
-            //Console.Read();
+        
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
         {
            TimeSpan days = tFin.Subtract(tDebut);
