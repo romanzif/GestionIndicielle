@@ -34,7 +34,8 @@ namespace GestionIndicielle.Parser
                     for (int i = 0; i < data.GetLength(0); i++)
                     {
                         data[i,j] = e.Current;
-                        e.MoveNext();   
+                        e.MoveNext();
+                        Console.Write(data[i, j]);
                     }
                 }
             }
@@ -57,6 +58,7 @@ namespace GestionIndicielle.Parser
                     {
                         data[i, j] = e.Current;
                         e.MoveNext();
+                        Console.Write(data[i,j]);
                     }
                 }
             }

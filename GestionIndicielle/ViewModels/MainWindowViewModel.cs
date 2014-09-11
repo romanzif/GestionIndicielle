@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Prism.Mvvm;
@@ -15,6 +16,54 @@ namespace GestionIndicielle.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
+        private DateTime _tGraphDebut = new DateTime(2006, 1, 2, 0, 0, 0);
+        private DateTime _tGraphFin = new DateTime(2006, 1, 3, 0, 0, 0);
+        public double TrackError=2.5;
+        public double RatioInfo=3.0;
+        
+    
+
+        public string TrackingError
+        {
+            get { return TrackError.ToString(); }
+            set { ; }
+        }
+
+
+        public string RatioInformation
+        {
+            get { return RatioInfo.ToString(); }
+            set { ; }
+        }
+
+        public DateTime TGraphDebut
+        {
+            get { return _tGraphDebut; }
+            set
+            {
+                _tGraphDebut = value; 
+                Console.Write(_tGraphDebut);
+            }
+        }
+ 
+
+        public DateTime TGraphFin
+        {
+            get { return _tGraphFin; }
+            set
+            {
+                if (DateTime.Compare(_tGraphDebut, value) < 0)
+                {
+                    _tGraphFin = value;
+                }
+                else
+                {
+                    _tGraphFin = _tGraphDebut.AddDays(1);
+                }
+            }
+        }
+
+
         public string  PeriodeEstimation
         {
             get { return _periodeEstimation; }
@@ -50,7 +99,7 @@ namespace GestionIndicielle.ViewModels
                 {
                     _budget = value;
                     OnPropertyChanged(() => Budget);
-                };
+                }
             }
 
         }

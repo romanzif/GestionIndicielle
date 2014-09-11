@@ -57,7 +57,7 @@ namespace GestionIndicielle.Models
             Mat = initMat;
         }
 
-        const string pathToDll = @"C:\Users\Yael\Desktop\COURS ENSIMAG\Ensimag 3A\Projet Gestion Indicielle\src\GestionIndicielle\GestionIndicielle\Dlls\wre-ensimag-c-4.1.dll";
+        const string pathToDll = @"..\..\Dlls\wre-ensimag-c-4.1.dll";
 
         [DllImport(pathToDll, EntryPoint = "WREmodelingCov", CallingConvention = CallingConvention.Cdecl)]
         public static extern int NORMmodelingCov(
