@@ -154,7 +154,7 @@ namespace GestionIndicielle.Models
             {
                 maxWeights[i] = 1;
             }
-            double relativeTargetReturn = 0.02;
+            double relativeTargetReturn = 0;
             int info = 0;
             var optimalWeights = new double[nbAssets];
 

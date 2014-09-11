@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GestionIndicielle.Models
 {
-    class Portfolio
+    public class Portfolio
     {
         public double BudgetInit;
         public Matrice PortfolioMatrix;

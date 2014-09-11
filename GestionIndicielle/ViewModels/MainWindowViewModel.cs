@@ -108,7 +108,8 @@ namespace GestionIndicielle.ViewModels
         public double[,] D, I;
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
-        public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
+        public Portfolio MyPort;
+        public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
 
         public MainWindowViewModel()
@@ -123,7 +124,7 @@ namespace GestionIndicielle.ViewModels
             Parse.LoadIndice(I, Tdebut, Tfin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
-            var estMatrix = new Matrice(FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First());
+            MyPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList.First(), FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First(), int.Parse(Budget));
         }
         
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
