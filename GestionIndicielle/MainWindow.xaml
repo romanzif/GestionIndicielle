@@ -1,19 +1,19 @@
 ﻿<Window x:Class="GestionIndicielle.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="634" Width="940">
+        Height="644.5" Width="940">
     <Grid RenderTransformOrigin="-0.097,0.046">
         <Grid.RowDefinitions>
-            <RowDefinition Height="77*"/>
-            <RowDefinition Height="124*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <DatePicker x:Name="Date_de_début" HorizontalAlignment="Left"
-            SelectedDate="{Binding tDebut, Mode=TwoWay}"
+            SelectedDate="{Binding TGraphDebut, Mode=TwoWay}"
 		    Text="Date de début"
-            Margin="10,338,0,0"
+            Margin="494,115,0,0"
 		    VerticalAlignment="Top"
-		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281" DisplayDateStart="2006-01-02" Grid.Row="1">
+		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281" DisplayDateStart="2006-01-02" Grid.Row="1" Height="24" Width="150">
             <DatePicker.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
                     <GradientStop Color="#FFA3AEB9" Offset="0"/>
@@ -24,17 +24,26 @@
             </DatePicker.BorderBrush>
         </DatePicker>
         <DatePicker x:Name="Date_de_fin" HorizontalAlignment="Right"
-		    Margin="0,339,610,0"
+            SelectedDate="{Binding TGraphFin, Mode=TwoWay}"
+		    Margin="0,115,60,0"
             Text="Date de fin"
 		    VerticalAlignment="Top"
-		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17" Grid.Row="1"/>
+		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17" Grid.Row="1" Height="24" Width="150"/>
 
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="696,257,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="696,221,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
-        <Button  Content="OK" HorizontalAlignment="Left" Height="61" Margin="819,220,0,0" VerticalAlignment="Top" Width="82" Command="{Binding Path= Selection}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
-        <TextBlock TextWrapping="Wrap" Height="25" Text="Periode d'estimation" VerticalAlignment="Top" Margin="529,221,0,0" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Left" Height="25" Margin="529,257,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" />
-        <TextBlock HorizontalAlignment="Left" Height="25" Margin="529,181,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" />
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="696,181,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="80" Grid.Row="1"/>
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,292,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,242,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
+        <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="225,342,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= Selection}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
+        <TextBlock TextWrapping="Wrap" Height="25" Text="Periode d'estimation" VerticalAlignment="Top" Margin="50,249,764,0" Grid.Row="1"/>
+        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,299,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" Width="129" />
+        <TextBlock HorizontalAlignment="Left" Height="21" Margin="50,198,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" Width="98" RenderTransformOrigin="0.653,0.762" />
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,191,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="90" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
+        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,525,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Tracking Error" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.864,0.458"/>
+        <TextBlock HorizontalAlignment="Left" Height="27" Margin="50,484,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Ratio d'informations" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.736,0.556"/>
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="220,484,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=RatioInformation,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.126,0.333"/>
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="220,525,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=TrackingError,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.268,0.458"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="233" Margin="39,148,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="315" RenderTransformOrigin="0.055,-0.19"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="126" Margin="39,443,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="315"/>
+
     </Grid>
+
 </Window>
