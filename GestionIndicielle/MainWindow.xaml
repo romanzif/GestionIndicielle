@@ -57,8 +57,13 @@
                 </LinearGradientBrush>
             </Border.BorderBrush>
         </Border>
-        <TextBlock HorizontalAlignment="Left" Height="66" Margin="148,10,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
+        <TextBlock HorizontalAlignment="Left" Height="66" Margin="127,0,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
 
+        <Grid HorizontalAlignment="Left" Height="205" Margin="438,176,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="475" RenderTransformOrigin="0.5,0.615">
+           
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="205" Margin="440,399,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="473"/>
+      
     </Grid>
 
 </Window>
