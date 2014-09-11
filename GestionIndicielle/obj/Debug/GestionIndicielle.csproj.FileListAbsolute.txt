@@ -16,3 +16,6 @@ C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.csproj.GenerateResource.Cache
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.exe
 C:\Users\ensimag\Documents\GitHub\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.pdb
+Z:\GestionIndicielle\GestionIndicielle\bin\Debug\GestionIndicielle.exe.config
+Z:\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.exe
+Z:\GestionIndicielle\GestionIndicielle\obj\Debug\GestionIndicielle.pdb
