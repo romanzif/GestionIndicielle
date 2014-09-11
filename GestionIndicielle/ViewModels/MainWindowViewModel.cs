@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
+using Microsoft.Practices.Prism.Mvvm;
 using System.Windows.Input;
 using GestionIndicielle.Models;
 using GestionIndicielle.Parser;
@@ -11,11 +13,41 @@ namespace GestionIndicielle.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        public Matrice D,I;
         public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private string _periodeEstimation, _periodeRebalancement,_budget;
         private int _perEstimation, _perRebalancement,_budg;
+        private DateTime _tGraphDebut = new DateTime(2006, 1, 2, 0, 0, 0);
+        private DateTime _tGraphFin = new DateTime(2006, 1, 17, 0, 0, 0);
+
+        
+
+        public DateTime TGraphDebut
+        {
+            get { return _tGraphDebut; }
+            set
+            {
+                _tGraphDebut = value; 
+                Console.Write(_tGraphDebut);
+            }
+        }
+ 
+
+        public DateTime TGraphFin
+        {
+            get { return _tGraphFin; }
+            set
+            {
+                if (DateTime.Compare(_tGraphDebut, value) < 0)
+                {
+                    _tGraphFin = value;
+                }
+                else
+                {
+                    _tGraphFin = _tGraphDebut.AddDays(1);
+                }
+            }
+        }
 
 
         public string  PeriodeEstimation
@@ -28,6 +60,7 @@ namespace GestionIndicielle.ViewModels
                     _periodeEstimation = value;
                     OnPropertyChanged(() =>PeriodeEstimation);
                     _perEstimation = int.Parse(_periodeEstimation);
+                    Console.Write(_perEstimation);
                 };
             }
  
@@ -44,6 +77,7 @@ namespace GestionIndicielle.ViewModels
                     _periodeRebalancement = value;
                     OnPropertyChanged(()=>PeriodeRebalancement);
                     _perRebalancement = int.Parse(_periodeRebalancement);
+                    Console.Write(_periodeRebalancement);
                 }
             }
         }
@@ -58,24 +92,47 @@ namespace GestionIndicielle.ViewModels
                     _budget = value;
                     OnPropertyChanged(() => Budget);
                     _budg = int.Parse(_budget);
+                    Console.Write(_budget);
                 };
             }
 
         }
         public ICommand Selection { get; private set; }
 
-       
+        public Matrice D, I;
 
          public MainWindowViewModel()
          {
             Selection = new DelegateCommand(Click);
 
-            D = new Matrice(DaysIgnoreWeekends(Tdebut,Tfin), 29);
-            I = new Matrice(DaysIgnoreWeekends(Tdebut, Tfin), 1);
+            D = new Matrice(new double[DaysIgnoreWeekends(Tdebut,Tfin), 29]);
+            I = new Matrice(new double[DaysIgnoreWeekends(Tdebut, Tfin), 1]);
             Parse.LoadPrice(D,Tdebut,Tfin);
             Parse.LoadIndice(I,Tdebut,Tfin);
         }
+            
+            //double [,] tmp = { {1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+            //Mat = new Matrix(tmp);
 
+            //double[,] myCovMatrix = Mat.MatR;
+            //Console.WriteLine("Covariance matrix:");
+            //for (int i = 0; i < myCovMatrix.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < myCovMatrix.GetLength(0); j++)
+            //    {
+            //        Console.WriteLine("Cov(" + i + "," + j + ")=" + myCovMatrix[i, j]);
+
+            //    }
+            //}
+
+            //double[] myRMoy = Mat.MatRMoyen;
+            //Console.WriteLine("RMoyMatrix:");
+            //for (int i = 0; i < myRMoy.GetLength(0); i++)
+            //{
+            //        Console.WriteLine("Cov(" + i + ")" + myRMoy[i]);
+            //}
+            //Console.WriteLine("Type enter to exit");
+            //Console.Read();
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
         {
            TimeSpan days = tFin.Subtract(tDebut);
