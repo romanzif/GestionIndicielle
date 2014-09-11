@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Prism.Mvvm;
@@ -16,11 +17,26 @@ namespace GestionIndicielle.ViewModels
         public DateTime Tfin = new DateTime(2006, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private string _periodeEstimation, _periodeRebalancement,_budget;
-        private int _perEstimation, _perRebalancement,_budg;
+        private int _perEstimation, _perRebalancement, _budg;
         private DateTime _tGraphDebut = new DateTime(2006, 1, 2, 0, 0, 0);
-        private DateTime _tGraphFin = new DateTime(2006, 1, 17, 0, 0, 0);
-
+        private DateTime _tGraphFin = new DateTime(2006, 1, 3, 0, 0, 0);
+        public double TrackError=2.5;
+        public double RatioInfo=3.0;
         
+    
+
+        public string TrackingError
+        {
+            get { return TrackError.ToString(); }
+            set { ; }
+        }
+
+
+        public string RatioInformation
+        {
+            get { return RatioInfo.ToString(); }
+            set { ; }
+        }
 
         public DateTime TGraphDebut
         {
