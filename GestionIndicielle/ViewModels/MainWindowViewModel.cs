@@ -23,7 +23,7 @@ namespace GestionIndicielle.ViewModels
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
         private DateTime _tGraphDebut = new DateTime(2006, 1, 2, 0, 0, 0);
-        private DateTime _tGraphFin = new DateTime(2006, 1, 3, 0, 0, 0);
+        private DateTime _tGraphFin = new DateTime(2013, 9, 3, 0, 0, 0);
         public double TrackError=2.5;
         public double RatioInfo=3.0;
 
@@ -129,6 +129,25 @@ namespace GestionIndicielle.ViewModels
         public List<Portfolio> MyPortList;
         public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
+        private DateTime[] _calendrier;
+
+
+        public DateTime[] Calendrier
+        {
+            get { return Calendrier; }
+            set
+            {
+                int i = 0;
+                for (DateTime j = Tdebut; DateTime.Compare(j, Tfin) < 0; j.AddDays(1))
+                {
+                    if (j.DayOfWeek != DayOfWeek.Sunday && j.DayOfWeek != DayOfWeek.Saturday)
+                    {
+                        _calendrier[i] = j;
+                        i++;
+                    }  
+                }   
+            }
+        }
 
         public MainWindowViewModel()
         {
@@ -252,6 +271,8 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel = tmp;
+            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
+            this.PlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" });
         }
 
         private void LoadData2(double[] valPortef, double[] valBenchmark)

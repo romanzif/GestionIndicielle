@@ -61,7 +61,6 @@ namespace GestionIndicielle.Parser
                         data[i, j] = e.Current;
                         e.MoveNext();
                         //Console.Write(data[i,j]);
-
                     }
                 }
             }
