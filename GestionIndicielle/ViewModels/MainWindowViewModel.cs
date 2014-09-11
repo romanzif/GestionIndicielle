@@ -110,6 +110,7 @@ namespace GestionIndicielle.ViewModels
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
         public List<Portfolio> MyPortList;
+        public List<Benchmark> BenchList;
         public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
 
@@ -118,7 +119,7 @@ namespace GestionIndicielle.ViewModels
             Selection = new DelegateCommand(Click);
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            PeriodeEstimation = "100"; // 2semaines 
+            PeriodeEstimation = "50"; // 2semaines 
             PeriodeRebalancement = "100"; //2mois
             Budget = "100";
             Parse.LoadPrice(D, Tdebut, Tfin);
@@ -126,12 +127,47 @@ namespace GestionIndicielle.ViewModels
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
-            MyPortList.Add(new Portfolio(FormatedBigMatrix.RebalancementMatrixList.First(), FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First(), int.Parse(Budget)));
-
+            double budget = double.Parse(Budget);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
-                MyPortList.Add(new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i], FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], int.Parse(Budget)));
+                var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
+                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget
+                    );
+                MyPortList.Add(currentPort);
+                int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0)-1;
+                budget = currentPort.PortfolioValues[index];
             }
+            BenchList = new List<Benchmark>();
+            budget = double.Parse(Budget);
+            for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
+            {
+                var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i],budget);
+                BenchList.Add(currentBench);
+                int index = FormatedBenchMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
+                budget = currentBench.BenchmarkValue[index];
+            }
+            double [,] P = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length,1];
+            for (int i = 0; i < MyPortList.Count; i++)
+            {
+                double[] currentPortValues = MyPortList[i].PortfolioValues;
+                for (int j = 0; j < currentPortValues.Length; j++)
+                {
+                    P[j + i*currentPortValues.Length, 0] = currentPortValues[j];
+                }
+            }
+            double[,] B = new double[BenchList.Count*BenchList.First().BenchmarkValue.Length, 1];
+            for (int i = 0; i < BenchList.Count; i++)
+            {
+                double[] currentBenchValues = BenchList[i].BenchmarkValue;
+                for (int j = 0; j < currentBenchValues.Length; j++)
+                {
+                    B[j + i * currentBenchValues.Length, 0] = currentBenchValues[j];
+                }
+            }
+            double[,] RendP = Matrice.computeRMatrix(P);
+            double[,] RendB = Matrice.computeRMatrix(B);
+            TrackError = ErrorRatios.ComputeTrackingErrorExPost(RendP, RendB);
+            RatioInfo = ErrorRatios.ComputeRatioInformation(RendP, RendB);
         }
         
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)

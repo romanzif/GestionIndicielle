@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GestionIndicielle.Models
 {
-    class Benchmark
+    public class Benchmark
     {
         public double BudgetInit;
         public double [,] BenchmarkMatrix;

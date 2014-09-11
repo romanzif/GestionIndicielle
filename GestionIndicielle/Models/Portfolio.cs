@@ -11,6 +11,7 @@ namespace GestionIndicielle.Models
         public double BudgetInit;
         public Matrice PortfolioMatrix;
         public double[] NbAssetsHeld;
+        public double[] PortfolioValues;
         public Portfolio(double[,] rebMat, double[,] estMat, double[,] benchMat, double budgetInit)
         {
             PortfolioMatrix = new Matrice(estMat,benchMat);
@@ -26,22 +27,16 @@ namespace GestionIndicielle.Models
                 // nbactions(i) = budget * poidsaffecte / prix de l'action
                 NbAssetsHeld[i] = BudgetInit*PortfolioMatrix.WeightsVect[i]/firstAssetsPrices[i];
             }
-        }
-
-
-        public double[,] computePortfolio(double[,] assetsPrices, double[] weights)
-        {
-            int dataSize = assetsPrices.GetLength(0);
-            int nbAssets = assetsPrices.GetLength(1);
-            var res = new double[dataSize, nbAssets];
-            for (int j = 0; j < nbAssets; j++)
+            PortfolioValues = new double[rebMat.GetLength(0)];
+            for (int i = 0; i < rebMat.GetLength(0); i++)
             {
-                for (int i = 0; i < dataSize; i++)
+                double value = 0;
+                for (int j = 0; j < NbAssetsHeld.Length; j++)
                 {
-                    res[i, j] = assetsPrices[i, j] * weights[j];
+                    value += NbAssetsHeld[j]*rebMat[i, j];
                 }
+                PortfolioValues[i] = value;
             }
-            return res;
         }
     }
 }

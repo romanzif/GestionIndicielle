@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GestionIndicielle.Models
 {
-    class ErrorRatios
+    public class ErrorRatios
     {
-        public double[,] ComputeDeltaRend(double[,] rendPort, double[,] rendBench)
+        public static double[,] ComputeDeltaRend(double[,] rendPort, double[,] rendBench)
         {
             var deltaRend = new double[rendPort.GetLength(0), 1];
             for (int i = 0; i < deltaRend.GetLength(0); i++)
@@ -18,7 +18,7 @@ namespace GestionIndicielle.Models
             return deltaRend;
         }
 
-        public double ComputeTrackingErrorExPost(double[,] rendPort, double[,] rendBench)
+        public static double ComputeTrackingErrorExPost(double[,] rendPort, double[,] rendBench)
         {
             double[,] deltaRend = ComputeDeltaRend(rendPort, rendBench);
             double[,] resTemp = Matrice.computeCovarianceMatrix(deltaRend);
@@ -27,7 +27,7 @@ namespace GestionIndicielle.Models
             return res;
         }
 
-        public double ComputeRatioInformation(double[,] rendPort, double[,] rendBench)
+        public static double ComputeRatioInformation(double[,] rendPort, double[,] rendBench)
         {
             double varDelta = ComputeTrackingErrorExPost(rendPort, rendBench);
             double[,] deltaRend = ComputeDeltaRend(rendPort, rendBench);
