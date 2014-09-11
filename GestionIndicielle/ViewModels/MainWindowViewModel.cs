@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Windows;
@@ -108,7 +109,7 @@ namespace GestionIndicielle.ViewModels
         public double[,] D, I;
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
-        public Portfolio MyPort;
+        public List<Portfolio> MyPortList;
         public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
 
@@ -118,13 +119,19 @@ namespace GestionIndicielle.ViewModels
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
             PeriodeEstimation = "100"; // 2semaines 
-            PeriodeRebalancement = "45"; //2mois
+            PeriodeRebalancement = "100"; //2mois
             Budget = "100";
             Parse.LoadPrice(D, Tdebut, Tfin);
             Parse.LoadIndice(I, Tdebut, Tfin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
-            MyPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList.First(), FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First(), int.Parse(Budget));
+            MyPortList = new List<Portfolio>();
+            MyPortList.Add(new Portfolio(FormatedBigMatrix.RebalancementMatrixList.First(), FormatedBigMatrix.EstimationMatrixList.First(), FormatedBenchMatrix.EstimationMatrixList.First(), int.Parse(Budget)));
+
+            for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
+            {
+                MyPortList.Add(new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i], FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], int.Parse(Budget)));
+            }
         }
         
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
