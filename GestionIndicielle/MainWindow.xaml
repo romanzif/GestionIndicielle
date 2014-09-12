@@ -33,8 +33,11 @@
 
         <TextBox HorizontalAlignment="Left" Height="25" Margin="225,292,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
         <TextBox HorizontalAlignment="Left" Height="25" Margin="225,242,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
-        <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="225,342,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= Selection}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
+        <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="225,342,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= OkCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
+        <Button  Content="Back" HorizontalAlignment="Left" Height="27" Margin="481,384,0,0" VerticalAlignment="Top" Width="64" Command="{Binding Path= BackCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
+        <Button  Content="Forward" HorizontalAlignment="Left" Height="26" Margin="562,384,0,0" VerticalAlignment="Top" Width="64" Command="{Binding Path= ForwardCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
         <TextBlock TextWrapping="Wrap" Height="25" Text="Periode d'estimation" VerticalAlignment="Top" Margin="50,249,764,0" Grid.Row="1"/>
+        <TextBlock TextWrapping="Wrap" Height="25" Text="{Binding Path=GraphIndex}" VerticalAlignment="Top" Margin="646,384,118,0" Grid.Row="1"/>
         <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,299,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" Width="129" />
         <TextBlock HorizontalAlignment="Left" Height="21" Margin="50,198,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" Width="98" RenderTransformOrigin="0.653,0.762" />
         <TextBox HorizontalAlignment="Left" Height="25" Margin="225,191,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="90" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
@@ -60,6 +63,7 @@
         </Border>
         <TextBlock HorizontalAlignment="Left" Height="66" Margin="127,0,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
 
+<<<<<<< HEAD
         <Grid HorizontalAlignment="Left" Height="192" Margin="407,176,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.5,0.615">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0*"/>
@@ -70,6 +74,14 @@
 
         <Grid HorizontalAlignment="Left" Height="190" Margin="407,399,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="506">
             <oxy:Plot x:Name="Plot2" Title="A Graph" Model="{Binding PlotModel2}" Margin="-32,10,10,10"/>
+=======
+        <Grid HorizontalAlignment="Left" Height="205" Margin="438,163,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="475" RenderTransformOrigin="0.5,0.615">
+            <oxy:Plot x:Name="Plot1" Title="A Graph" Model="{Binding PlotModel}" Margin="10,0,10,20"/>
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Height="205" Margin="438,398,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="473">
+            <oxy:Plot x:Name="Plot2" Title="A Graph" Model="{Binding PlotModel2}" Margin="10,20,10,0"/>
+>>>>>>> 83c8e36998a4dfa882cd13f80714d232971513df
         </Grid>
        
     </Grid>

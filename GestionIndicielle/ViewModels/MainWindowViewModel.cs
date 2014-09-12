@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Microsoft.Practices.Prism.Mvvm;
 using System.Windows.Input;
 using GestionIndicielle.Models;
@@ -43,14 +44,21 @@ namespace GestionIndicielle.ViewModels
         }
         public string TrackingError
         {
-            get { return TrackError.ToString(); }
+            get
+            {
+                TrackError *= 100;
+                return TrackError.ToString("#0.000", System.Globalization.CultureInfo.InvariantCulture) + "%"; ; }
             set { ; }
         }
 
 
         public string RatioInformation
         {
-            get { return RatioInfo.ToString(); }
+            get
+            {
+                RatioInfo *= 100;
+                return RatioInfo.ToString("#0.000", System.Globalization.CultureInfo.InvariantCulture) + "%"; ;
+            }
             set { ; }
         }
 
@@ -122,7 +130,9 @@ namespace GestionIndicielle.ViewModels
 
         }
 
-        public ICommand Selection { get; private set; }
+        public ICommand OkCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
+        public ICommand ForwardCommand { get; private set; }
         public double[,] D, I;
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
@@ -131,7 +141,61 @@ namespace GestionIndicielle.ViewModels
         public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private DateTime[] _calendrier;
+        private int currentGraphIndex;
+        private string _graphIndex;
 
+        public string GraphIndex
+        {
+            get { return _graphIndex; }
+            set { _graphIndex = value; OnPropertyChanged(()=>GraphIndex); }
+        }
+
+
+
+        public MainWindowViewModel()
+        {
+            PlotModel = new PlotModel();
+            PlotModel2 = new PlotModel();
+            OkCommand = new DelegateCommand(Click);
+            BackCommand = new DelegateCommand(Back);
+            ForwardCommand = new DelegateCommand(Forward);
+            PeriodeEstimation = "50"; // 2semaines 
+            PeriodeRebalancement = "75"; //2mois
+            Budget = "100";
+            generateWholeWindowOnChange();
+        }
+
+        public void Back()
+        {
+            if (currentGraphIndex == 0)
+            {
+                currentGraphIndex = MyPortList.Count - 1;
+            }
+            else
+            {
+                currentGraphIndex--;
+            }
+            GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
+            double[] essai = MyPortList[currentGraphIndex].PortfolioValues;
+            double[] essai2 = BenchList[currentGraphIndex].BenchmarkValue;
+            LoadData2(essai, essai2);
+        }
+
+        public void Forward()
+        {
+            if (currentGraphIndex == MyPortList.Count - 1)
+            {
+                currentGraphIndex = 0;
+            }
+            else
+            {
+                currentGraphIndex++;
+            }
+            GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
+            double[] essai = MyPortList[currentGraphIndex].PortfolioValues;
+            double[] essai2 = BenchList[currentGraphIndex].BenchmarkValue;
+            LoadData2(essai, essai2);
+        }
 
         public DateTime[] Calendrier
         {
@@ -145,8 +209,8 @@ namespace GestionIndicielle.ViewModels
                     {
                         _calendrier[i] = j;
                         i++;
-                    }  
-                }   
+                    }
+                }
             }
         }
 
@@ -208,18 +272,11 @@ namespace GestionIndicielle.ViewModels
             double[] essai = PortAsArray;
             double[] essai2 = BenchAsArray;
             LoadData(essai, essai2);
+            essai = MyPortList.First().PortfolioValues;
+            essai2 = BenchList.First().BenchmarkValue;
             LoadData2(essai, essai2);
-        }
-
-        public MainWindowViewModel()
-        {
-            PlotModel = new PlotModel();
-            PlotModel2 = new PlotModel();
-            Selection = new DelegateCommand(Click);
-            PeriodeEstimation = "50"; // 2semaines 
-            PeriodeRebalancement = "75"; //2mois
-            Budget = "100";
-            generateWholeWindowOnChange();
+            currentGraphIndex = 0;
+            GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
         }
         
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
@@ -246,7 +303,7 @@ namespace GestionIndicielle.ViewModels
             Tfin = d;
         }
 
-        public void Click()
+        private void Click()
         {
             SelectBalancement();
             SelectEstimation();
