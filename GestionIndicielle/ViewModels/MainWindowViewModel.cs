@@ -150,16 +150,10 @@ namespace GestionIndicielle.ViewModels
             }
         }
 
-        public MainWindowViewModel()
+        public void generateWholeWindowOnChange()
         {
-            PlotModel = new PlotModel();
-            PlotModel2 = new PlotModel();
-            Selection = new DelegateCommand(Click);
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            PeriodeEstimation = "50"; // 2semaines 
-            PeriodeRebalancement = "100"; //2mois
-            Budget = "100";
             Parse.LoadPrice(D, Tdebut, Tfin);
             Parse.LoadIndice(I, Tdebut, Tfin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
@@ -172,34 +166,38 @@ namespace GestionIndicielle.ViewModels
                     FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget
                     );
                 MyPortList.Add(currentPort);
-                int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0)-1;
+                int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
                 budget = currentPort.PortfolioValues[index];
             }
             BenchList = new List<Benchmark>();
             budget = double.Parse(Budget);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
-                var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i],budget);
+                var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i], budget);
                 BenchList.Add(currentBench);
                 int index = FormatedBenchMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
                 budget = currentBench.BenchmarkValue[index];
             }
-            double [,] P = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length,1];
+            double[,] P = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length, 1];
+            double[] PortAsArray = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length];
             for (int i = 0; i < MyPortList.Count; i++)
             {
                 double[] currentPortValues = MyPortList[i].PortfolioValues;
                 for (int j = 0; j < currentPortValues.Length; j++)
                 {
-                    P[j + i*currentPortValues.Length, 0] = currentPortValues[j];
+                    P[j + i * currentPortValues.Length, 0] = currentPortValues[j];
+                    PortAsArray[j + i * currentPortValues.Length] = currentPortValues[j];
                 }
             }
-            double[,] B = new double[BenchList.Count*BenchList.First().BenchmarkValue.Length, 1];
+            double[,] B = new double[BenchList.Count * BenchList.First().BenchmarkValue.Length, 1];
+            double[] BenchAsArray = new double[BenchList.Count * BenchList.First().BenchmarkValue.Length];
             for (int i = 0; i < BenchList.Count; i++)
             {
                 double[] currentBenchValues = BenchList[i].BenchmarkValue;
                 for (int j = 0; j < currentBenchValues.Length; j++)
                 {
                     B[j + i * currentBenchValues.Length, 0] = currentBenchValues[j];
+                    BenchAsArray[j + i * currentBenchValues.Length] = currentBenchValues[j];
                 }
             }
             double[,] RendP = Matrice.computeRMatrix(P);
@@ -207,10 +205,21 @@ namespace GestionIndicielle.ViewModels
             TrackError = ErrorRatios.ComputeTrackingErrorExPost(RendP, RendB);
             RatioInfo = ErrorRatios.ComputeRatioInformation(RendP, RendB);
             SetUpModel();
-            double[] essai = MyPortList.First().PortfolioValues;
-            double[] essai2 = BenchList.First().BenchmarkValue;
+            double[] essai = PortAsArray;
+            double[] essai2 = BenchAsArray;
             LoadData(essai, essai2);
             LoadData2(essai, essai2);
+        }
+
+        public MainWindowViewModel()
+        {
+            PlotModel = new PlotModel();
+            PlotModel2 = new PlotModel();
+            Selection = new DelegateCommand(Click);
+            PeriodeEstimation = "50"; // 2semaines 
+            PeriodeRebalancement = "75"; //2mois
+            Budget = "100";
+            generateWholeWindowOnChange();
         }
         
         private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
@@ -242,6 +251,7 @@ namespace GestionIndicielle.ViewModels
             SelectBalancement();
             SelectEstimation();
             SelectBudget();
+            generateWholeWindowOnChange();
         }
 
         private void SelectBalancement()
@@ -267,7 +277,7 @@ namespace GestionIndicielle.ViewModels
             PlotModel.LegendTitle = "Portefeuille vs Benchmark";
             PlotModel.LegendOrientation = LegendOrientation.Horizontal;
             PlotModel.LegendPlacement = LegendPlacement.Outside;
-            PlotModel.LegendPosition = LegendPosition.TopRight;
+            PlotModel.LegendPosition = LegendPosition.BottomLeft;
             PlotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             PlotModel.LegendBorder = OxyColors.Black;
 
@@ -279,11 +289,14 @@ namespace GestionIndicielle.ViewModels
             PlotModel2.LegendTitle = "Portefeuille vs Benchmark";
             PlotModel2.LegendOrientation = LegendOrientation.Horizontal;
             PlotModel2.LegendPlacement = LegendPlacement.Outside;
-            PlotModel2.LegendPosition = LegendPosition.TopRight;
+            PlotModel2.LegendPosition = LegendPosition.BottomLeft;
             PlotModel2.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             PlotModel2.LegendBorder = OxyColors.Black;
 
-  
+            var dateAxis2 = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
+            PlotModel2.Axes.Add(dateAxis2);
+            var valueAxis2 = new OxyPlot.Axes.LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
+            PlotModel2.Axes.Add(valueAxis2);
         }
 
         private void LoadData(double[] valPortef, double [] valBenchmark)
@@ -304,8 +317,11 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel = tmp;
+            PlotModel.LegendPosition = LegendPosition.LeftBottom;
+            PlotModel.LegendPlacement = LegendPlacement.Outside;
             this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
             this.PlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20});
+
         }
 
         private void LoadData2(double[] valPortef, double[] valBenchmark)
@@ -327,7 +343,8 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel2 = tmp;
-            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
+            this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
+
         }
       
     }
