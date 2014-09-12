@@ -12,9 +12,11 @@ namespace GestionIndicielle.Models
         public Matrice PortfolioMatrix;
         public double[] NbAssetsHeld;
         public double[] PortfolioValues;
-        public Portfolio(double[,] rebMat, double[,] estMat, double[,] benchMat, double budgetInit)
+        public double RelativeTargetReturn;
+        public Portfolio(double[,] rebMat, double[,] estMat, double[,] benchMat, double budgetInit, double RTR)
         {
-            PortfolioMatrix = new Matrice(estMat,benchMat);
+            PortfolioMatrix = new Matrice(estMat, benchMat, RTR);
+            RelativeTargetReturn = RTR;
             BudgetInit = budgetInit;
             NbAssetsHeld = new double[PortfolioMatrix.Mat.GetLength(1)];
             double[] firstAssetsPrices = new double[PortfolioMatrix.Mat.GetLength(1)];

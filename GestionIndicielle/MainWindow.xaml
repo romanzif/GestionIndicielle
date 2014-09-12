@@ -33,6 +33,8 @@
 		    VerticalAlignment="Top"
 		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17" Grid.Row="1" Height="24" Width="150"/>
 
+        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,102,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Target Return" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="21" Margin="197,99,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="{Binding Path=RelativeTargetReturn, Mode=TwoWay}" VerticalAlignment="Top" Width="65"/>
         <TextBox HorizontalAlignment="Left" Height="21" Margin="197,178,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
         <TextBox HorizontalAlignment="Left" Height="21" Margin="197,152,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
         <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="172,475,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= OkCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>

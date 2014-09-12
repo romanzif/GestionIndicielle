@@ -27,6 +27,7 @@ namespace GestionIndicielle.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
+        private string _RTR;
         public double TrackError=0;
         public double RatioInfo=0;
 
@@ -93,6 +94,22 @@ namespace GestionIndicielle.ViewModels
             }
         }
 
+        public string RelativeTargetReturn
+        {
+            get
+            {
+                return _RTR;
+            }
+            set
+            {
+                if (_RTR != value)
+                {
+                    _RTR = value;
+                    OnPropertyChanged(() => RelativeTargetReturn);
+
+                }
+            }
+        }
 
         public string  PeriodeEstimation
         {
@@ -176,11 +193,11 @@ namespace GestionIndicielle.ViewModels
             ForwardCommand = new DelegateCommand(Forward);
             PeriodeEstimation = "50"; 
             PeriodeRebalancement = "100";
+            RelativeTargetReturn = "0";
             Budget = "100";
             this.SelectedItems = new ObservableCollection<String>();
             this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
             SelectedAssetsList = new List<string>();
-            SetUpModel();
             generateWholeWindowOnChange(AssetList);
         }
 
@@ -209,7 +226,7 @@ namespace GestionIndicielle.ViewModels
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
             double[] essai = MyPortList[currentGraphIndex].PortfolioValues;
             double[] essai2 = BenchList[currentGraphIndex].BenchmarkValue;
-            UpdateData2(essai, essai2);
+            LoadData2(essai, essai2);
         }
 
         public void Forward()
@@ -225,6 +242,7 @@ namespace GestionIndicielle.ViewModels
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
             double[] essai = MyPortList[currentGraphIndex].PortfolioValues;
             double[] essai2 = BenchList[currentGraphIndex].BenchmarkValue;
+            SetUpModel();
             LoadData2(essai, essai2);
         }
 
@@ -255,10 +273,11 @@ namespace GestionIndicielle.ViewModels
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
             double budget = double.Parse(Budget);
+            double rtr = double.Parse(RelativeTargetReturn);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
-                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget
+                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget, rtr
                     );
                 MyPortList.Add(currentPort);
                 int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
@@ -303,10 +322,14 @@ namespace GestionIndicielle.ViewModels
             OnPropertyChanged(() => RatioInformation);
             double[] essai = PortAsArray;
             double[] essai2 = BenchAsArray;
+            SetUpModel();
             LoadData(essai, essai2);
             essai = MyPortList.First().PortfolioValues;
             essai2 = BenchList.First().BenchmarkValue;
             LoadData2(essai, essai2);
+
+
+
             currentGraphIndex = 0;
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
             checkForBugs();
@@ -455,6 +478,10 @@ namespace GestionIndicielle.ViewModels
             PlotModel.LegendBorder = OxyColors.Black;
 
             var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot};
+            dateAxis.Minimum = OxyPlot.Axes.DateTimeAxis.ToDouble(TDebut);
+            dateAxis.Maximum = OxyPlot.Axes.DateTimeAxis.ToDouble(TFin);
+            dateAxis.IntervalType = DateTimeIntervalType.Years;
+            dateAxis.MinorIntervalType = DateTimeIntervalType.Months;
             PlotModel.Axes.Add(dateAxis);
             var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
             PlotModel.Axes.Add(valueAxis);
@@ -489,9 +516,16 @@ namespace GestionIndicielle.ViewModels
 
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
+
+            var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
+            //dateAxis.Minimum = OxyPlot.Axes.DateTimeAxis.ToDouble(TDebut);
+            //dateAxis.Maximum = OxyPlot.Axes.DateTimeAxis.ToDouble(TFin);
+            dateAxis.IntervalType = DateTimeIntervalType.Years;
+            dateAxis.MinorIntervalType = DateTimeIntervalType.Months;
+            tmp.Axes.Add(dateAxis);
+            var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 50 };
+            tmp.Axes.Add(valueAxis);
             this.PlotModel = tmp;
-            this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
-            this.PlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20});
 
         }
 
@@ -513,13 +547,20 @@ namespace GestionIndicielle.ViewModels
 
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
+
+            var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
+            //dateAxis.Minimum = OxyPlot.Axes.DateTimeAxis.ToDouble(TDebut);
+            //dateAxis.Maximum = OxyPlot.Axes.DateTimeAxis.ToDouble(TFin);
+            dateAxis.IntervalType = DateTimeIntervalType.Months;
+            tmp.Axes.Add(dateAxis);
+            var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 50 };
+            tmp.Axes.Add(valueAxis);
             this.PlotModel2 = tmp;
-            this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot});
-            this.PlotModel2.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value"});
         }
 
         private void UpdateData2(double[] valPortef, double[] valBenchmark)
         {
+
             var tmp = new PlotModel { Title = "Valeur du portefeuille vs Benchmark (Zoom)" };
 
             var series1 = new OxyPlot.Series.LineSeries { Title = "Portefeuille", MarkerType = MarkerType.Circle };
@@ -537,8 +578,7 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel2 = tmp;
-            //this.PlotModel2.Axes.Clear();
-            //this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
+            this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
         }
     }
 }

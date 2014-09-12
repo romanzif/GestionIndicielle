@@ -45,8 +45,11 @@ namespace GestionIndicielle.Models
 
         public double[,] MatTotal { get; set; }
 
-        public Matrice(double[,] initMat, double[,]benchMat)
+        public double RelativeTargetReturn;
+
+        public Matrice(double[,] initMat, double[,]benchMat,  double RTR)
         {
+            RelativeTargetReturn = RTR;
             BenchMat = benchMat;
             MatTotal = new double[initMat.GetLength(0),initMat.GetLength(1)+1];
             for (int i = 0; i < initMat.GetLength(0); i++)
@@ -228,7 +231,7 @@ namespace GestionIndicielle.Models
             {
                 maxWeights[i] = 1;
             }
-            double relativeTargetReturn = -0.001;
+            double relativeTargetReturn = RelativeTargetReturn;
             int info = 0;
             var optimalWeights = new double[nbAssets];
 
