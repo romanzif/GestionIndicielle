@@ -309,8 +309,44 @@ namespace GestionIndicielle.ViewModels
             LoadData2(essai, essai2);
             currentGraphIndex = 0;
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
+            checkForBugs();
         }
-        
+
+        public void checkForBugs()
+        {
+            foreach (var portfolio in MyPortList)
+            {
+                if (portfolio.PortfolioMatrix.InfoCov != 0  || portfolio.PortfolioMatrix.ReturnFromNormCov != 0)
+                {
+                    MessageBox.Show("erreur cov non gérée", "Fatal Error");
+                    break;
+                }
+            }
+            foreach (var portfolio in MyPortList)
+            {
+                if (portfolio.PortfolioMatrix.InfoWeights == -100 && portfolio.PortfolioMatrix.ReturnFromNormWeights == 5)
+                {
+                    MessageBox.Show("Relative Target Return Invalid", "Fatal Error");
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoWeights == -108 &&
+                         portfolio.PortfolioMatrix.ReturnFromNormWeights != 5)
+                {
+                    PeriodeEstimation = (int.Parse(PeriodeEstimation)+1).ToString();
+                    generateWholeWindowOnChange(SelectedAssetsList);
+                    MessageBox.Show("Les données générées avec la période d'estimation fournie étaient invalides.\n" +
+                                    "Les données que nous fournissons son celles \n" +
+                                    "avec la plus petite période d'estimation "+PeriodeEstimation+" possible.\n", "Information");
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoWeights != 0 || portfolio.PortfolioMatrix.ReturnFromNormWeights != 0)
+                {
+                    MessageBox.Show("erreur weights non gérée", "Fatal Error");
+                    break;
+                }
+             
+            }
+        }
         private int DaysIgnoreWeekends(DateTime TDebut, DateTime TFin)
         {
            TimeSpan days = TFin.Subtract(TDebut);
@@ -340,14 +376,55 @@ namespace GestionIndicielle.ViewModels
             SelectBalancement();
             SelectEstimation();
             SelectBudget();
+            bool error = false;
             if (SelectedAssetsList.Count < 2)
             {
                 MessageBox.Show("Veuillez sélectionner 2 titres ou plus", "Erreur");
+                error = true;
             }
-            else
+            try
             {
-                generateWholeWindowOnChange(SelectedAssetsList);
+                double budget = Double.Parse(Budget);
+                if (budget <= 0)
+                {
+                    MessageBox.Show(budget + " n'est pas un budget valide", "Erreur");
+                }
             }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 100.67", "Erreur Budget");
+                error = true;
+            }
+            try
+            {
+                double estim = int.Parse(PeriodeEstimation) ;
+                if (estim <= 0)
+                {
+                    MessageBox.Show(estim + " n'est pas une période d'estimation valide", "Erreur");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un integer. exemple: 100", "Erreur Periode Estimation");
+                error = true;
+            }
+            try
+            {
+                double reb = int.Parse(PeriodeRebalancement) ;
+                if (reb <= 0)
+                {
+                    MessageBox.Show(reb + " n'est pas une période de rebalancement valide", "Erreur");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un integer. exemple: 100", "Erreur Periode Rebalancement");
+                error = true;
+            }
+
+            if (!error)
+                generateWholeWindowOnChange(SelectedAssetsList);
+       
         }
 
         private void SelectBalancement()

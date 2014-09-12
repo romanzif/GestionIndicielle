@@ -21,7 +21,7 @@ namespace GestionIndicielle.Models
         public static double ComputeTrackingErrorExPost(double[,] rendPort, double[,] rendBench)
         {
             double[,] deltaRend = ComputeDeltaRend(rendPort, rendBench);
-            double[,] resTemp = Matrice.computeCovarianceMatrix(deltaRend);
+            double[,] resTemp = Matrice.computeCovarianceMatrixForErrors(deltaRend);
             double res = resTemp[0, 0];
             res = Math.Sqrt(res);
             return res;

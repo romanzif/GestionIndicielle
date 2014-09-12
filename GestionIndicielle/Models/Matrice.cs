@@ -6,6 +6,10 @@ namespace GestionIndicielle.Models
 {
     public class Matrice
     {
+        public int InfoCov;
+        public int ReturnFromNormCov;
+        public int ReturnFromNormWeights;
+        public int InfoWeights;
         private double[,] _mat;
 
         public double[,] Mat
@@ -97,7 +101,18 @@ namespace GestionIndicielle.Models
             return res;
         }
 
-        public static double[,] computeCovarianceMatrix(double[,] returns)
+        public static double[,] computeCovarianceMatrixForErrors(double[,] returns)
+        {
+            int dataSize = returns.GetLength(0);
+            int nbAssets = returns.GetLength(1);
+            double[,] covMatrix = new double[nbAssets, nbAssets];
+            int info = 0;
+            int returnFromNormCov = NORMmodelingCov(ref dataSize, ref nbAssets, returns, covMatrix, ref info);
+            int infoCov = info;
+            return covMatrix;
+        }
+
+        public double[,] computeCovarianceMatrix(double[,] returns)
         {
             int dataSize = returns.GetLength(0);
             int nbAssets = returns.GetLength(1);
@@ -107,9 +122,8 @@ namespace GestionIndicielle.Models
             int infoCov = info;
             if (returnFromNormCov != 0)
             {
-                MessageBox.Show("La fenetre d'estimation doit être supérieure ou égale à 3 jours.\n" +
-                                "Les données générées sont invalides.\n" +
-                                "Veuillez augmenter la fenetre d'estimation.\n", "Fatal Error");
+                InfoCov = infoCov;
+                ReturnFromNormCov = returnFromNormCov;
             }
             return covMatrix;
         }
@@ -134,7 +148,8 @@ namespace GestionIndicielle.Models
             int returnFromNorm = NORMmodelingSDLScorr(ref p, nonDPCorrMatrix, ref constPrecision, ref minEigenValue, corrMatrix, ref info);
             if (returnFromNorm != 0)
             {
-                throw new Exception(); // Check out what went wrong here
+                MessageBox.Show("Erreur lors de la génération des poids. \nVeuillez augmenter la période d'estimation", "Fatal Error");
+                    // Check out what went wrong here
             }
 
             return corrMatrix;
@@ -221,11 +236,8 @@ namespace GestionIndicielle.Models
             int infoWeights = info;
             if (returnFromNormWeights != 0)
             {
-                if (returnFromNormWeights == 5 && infoWeights == -100)
-                {
-                    MessageBox.Show("Relative Target Return Invalid", "Fatal Error");
-                }
-                else if (info == -108 && returnFromNormWeights == 5)
+                
+                if (info == -108 && returnFromNormWeights == 5)
                 {
                     var CovVector = new double[covMat.GetLength(0)];
                     for (int i = 0; i < CovVector.GetLength(0); i++)
@@ -236,14 +248,10 @@ namespace GestionIndicielle.Models
                     returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
                 }else
                 {
-                    throw new Exception(); // Check out what went wrong here
+                    InfoWeights = infoWeights;
+                    ReturnFromNormWeights = returnFromNormWeights;
                 }
-                if (returnFromNormWeights == 5 && infoWeights == -108)
-                {
-                    MessageBox.Show("Les données générées sont invalides.\n" +
-                                "Veuillez augmenter la fenetre d'estimation.\n", "Fatal Error");
-                }
-                
+
             }
             return optimalWeights;
         }
