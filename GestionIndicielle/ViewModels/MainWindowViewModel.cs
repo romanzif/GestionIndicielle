@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Windows;
@@ -49,6 +51,18 @@ namespace GestionIndicielle.ViewModels
                 TrackError *= 100;
                 return TrackError.ToString("#0.000", System.Globalization.CultureInfo.InvariantCulture) + "%"; ; }
             set { ; }
+        }
+
+        public ObservableCollection<string> AssetList
+        {
+            get
+            {
+                var current = new ObservableCollection<string>();
+                current.Add("yallah");
+                current.Add("youhou");
+                current.Add("bracoubi");
+                return current;
+            }
         }
 
 
@@ -150,8 +164,9 @@ namespace GestionIndicielle.ViewModels
             set { _graphIndex = value; OnPropertyChanged(()=>GraphIndex); }
         }
 
+        public ObservableCollection<String> SelectedItems { get; private set; }
 
-
+        public IList<string> SelectedAssetsList; 
         public MainWindowViewModel()
         {
             PlotModel = new PlotModel();
@@ -159,11 +174,26 @@ namespace GestionIndicielle.ViewModels
             OkCommand = new DelegateCommand(Click);
             BackCommand = new DelegateCommand(Back);
             ForwardCommand = new DelegateCommand(Forward);
-            PeriodeEstimation = "50"; // 2semaines 
-            PeriodeRebalancement = "75"; //2mois
+            PeriodeEstimation = "50"; 
+            PeriodeRebalancement = "75";
             Budget = "100";
+            this.SelectedItems = new ObservableCollection<String>();
+            this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            SelectedAssetsList=new List<string>();
             generateWholeWindowOnChange();
         }
+
+        void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                SelectedAssetsList = new List<string>();
+                foreach (String str in this.SelectedItems)
+                    SelectedAssetsList.Add(str);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void Back()
         {

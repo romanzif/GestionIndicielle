@@ -75,6 +75,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Infrastrucure\ListBoxEx.cs" />
     <Compile Include="Models\Benchmark.cs" />
     <Compile Include="Models\ErrorRatios.cs" />
     <Compile Include="Models\Portfolio.cs" />
