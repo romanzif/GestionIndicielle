@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.codeplex.com"
         xmlns:infrastrucure="clr-namespace:GestionIndicielle.Infrastrucure"
-        Height="644.5" Width="940">
-    <Grid RenderTransformOrigin="-0.097,0.046">
+        Height="671.5" Width="1100">
+
+    <Grid RenderTransformOrigin="-0.097,0.046" Margin="0,0,-304,-1">
         <Grid.RowDefinitions>
             <RowDefinition Height="0*"/>
             <RowDefinition/>
@@ -13,7 +14,7 @@
         <DatePicker x:Name="Date_de_début" HorizontalAlignment="Left"
             SelectedDate="{Binding TGraphDebut, Mode=TwoWay}"
 		    Text="Date de début"
-            Margin="494,115,0,0"
+            Margin="562,115,0,0"
 		    VerticalAlignment="Top"
 		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281" DisplayDateStart="2006-01-02" Grid.Row="1" Height="24" Width="150">
             <DatePicker.BorderBrush>
@@ -27,27 +28,27 @@
         </DatePicker>
         <DatePicker x:Name="Date_de_fin" HorizontalAlignment="Right"
             SelectedDate="{Binding TGraphFin, Mode=TwoWay}"
-		    Margin="0,115,60,0"
+		    Margin="0,115,839,0"
             Text="Date de fin"
 		    VerticalAlignment="Top"
 		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17" Grid.Row="1" Height="24" Width="150"/>
 
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,292,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,242,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
-        <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="225,342,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= OkCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
+        <TextBox HorizontalAlignment="Left" Height="21" Margin="197,178,0,0" TextWrapping="Wrap" Text="{Binding Path=PeriodeRebalancement,Mode=TwoWay}" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.405,-3.083" Grid.Row="1" />
+        <TextBox HorizontalAlignment="Left" Height="21" Margin="197,152,0,0" TextWrapping="Wrap" Text="{Binding Path= PeriodeEstimation,Mode=TwoWay}" VerticalAlignment="Top" Width="65" RenderTransformOrigin="0.483,-0.619" Grid.Row="1" />
+        <Button  Content="OK" HorizontalAlignment="Left" Height="26" Margin="172,475,0,0" VerticalAlignment="Top" Width="90" Command="{Binding Path= OkCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
         <Button  Content="Back" HorizontalAlignment="Left" Height="27" Margin="481,384,0,0" VerticalAlignment="Top" Width="64" Command="{Binding Path= BackCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
         <Button  Content="Forward" HorizontalAlignment="Left" Height="26" Margin="562,384,0,0" VerticalAlignment="Top" Width="64" Command="{Binding Path= ForwardCommand}" RenderTransformOrigin="-2.585,-1.393" Grid.Row="1"/>
-        <TextBlock TextWrapping="Wrap" Height="25" Text="Periode d'estimation" VerticalAlignment="Top" Margin="50,249,764,0" Grid.Row="1"/>
+        <TextBlock TextWrapping="Wrap" Height="25" Text="Periode d'estimation" VerticalAlignment="Top" Margin="50,152,0,0" Grid.Row="1"/>
         <TextBlock TextWrapping="Wrap" Height="25" Text="{Binding Path=GraphIndex}" VerticalAlignment="Top" Margin="646,384,118,0" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,299,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" Width="129" />
-        <TextBlock HorizontalAlignment="Left" Height="21" Margin="50,198,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" Width="98" RenderTransformOrigin="0.653,0.762" />
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="225,191,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="90" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
-        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,525,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Tracking Error" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.864,0.458"/>
-        <TextBlock HorizontalAlignment="Left" Height="27" Margin="50,484,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Ratio d'informations" VerticalAlignment="Top" Width="129" RenderTransformOrigin="0.736,0.556"/>
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="220,484,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=RatioInformation,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.126,0.333"/>
-        <infrastrucure:ListBoxEx ItemsSource="{Binding AssetList}" Margin="22,43,710,470" SelectionMode="Multiple" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5" SelectedItems="{Binding SelectedItems}"/>
-        <TextBox HorizontalAlignment="Left" Height="25" Margin="220,525,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=TrackingError,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.268,0.458"/>
-        <Border BorderThickness="1" HorizontalAlignment="Left" Height="233" Margin="39,148,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="315" RenderTransformOrigin="0.055,-0.19" OpacityMask="#FFC73939">
+        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,178,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" Width="129" />
+        <TextBlock HorizontalAlignment="Left" Height="21" Margin="50,126,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" Width="98" RenderTransformOrigin="0.653,0.762" />
+        <TextBox HorizontalAlignment="Left" Height="21" Margin="197,126,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="65" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
+        <TextBlock HorizontalAlignment="Left" Height="24" Margin="50,581,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Tracking Error" VerticalAlignment="Top" Width="82" RenderTransformOrigin="0.864,0.458"/>
+        <TextBlock HorizontalAlignment="Left" Height="27" Margin="50,548,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Ratio d'informations" VerticalAlignment="Top" Width="110" RenderTransformOrigin="0.736,0.556"/>
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="167,548,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=RatioInformation,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.126,0.333"/>
+        <infrastrucure:ListBoxEx ItemsSource="{Binding AssetList}" Width="Auto" Height="236"  Margin="79,221,1165,0" SelectionMode="Multiple" Grid.Row="1"  VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" infrastrucure:ListBoxEx.SelectedItems="{Binding SelectedItems}"/>
+        <TextBox HorizontalAlignment="Left" Height="25" Margin="167,580,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=TrackingError,Mode=TwoWay}" VerticalAlignment="Top" Width="95" IsReadOnly="True" RenderTransformOrigin="1.268,0.458"/>
+        <Border BorderThickness="1" HorizontalAlignment="Left" Height="427" Margin="27,87,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="267" RenderTransformOrigin="0.055,-0.19" OpacityMask="#FFC73939">
             <Border.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -55,7 +56,7 @@
                 </LinearGradientBrush>
             </Border.BorderBrush>
         </Border>
-        <Border BorderThickness="1" HorizontalAlignment="Left" Height="126" Margin="39,443,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="315">
+        <Border BorderThickness="1" HorizontalAlignment="Left" Height="83" Margin="39,533,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="243">
             <Border.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -65,13 +66,26 @@
         </Border>
         <TextBlock HorizontalAlignment="Left" Height="66" Margin="127,0,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
 
-        <Grid HorizontalAlignment="Left" Height="205" Margin="438,163,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="475" RenderTransformOrigin="0.5,0.615">
-            <oxy:Plot x:Name="Plot1" Title="A Graph" Model="{Binding PlotModel}" Margin="10,0,10,20"/>
+
+        <Grid HorizontalAlignment="Left" Height="218" Margin="407,148,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.5,0.615">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="184*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="503*"/>
+            </Grid.ColumnDefinitions>
+            <oxy:Plot x:Name="Plot1" Title="A Graph" Model="{Binding PlotModel}" Margin="43,0,0,0" Grid.RowSpan="2" Grid.Column="2"/>
         </Grid>
 
-        <Grid HorizontalAlignment="Left" Height="205" Margin="438,398,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="473">
-            <oxy:Plot x:Name="Plot2" Title="A Graph" Model="{Binding PlotModel2}" Margin="10,20,10,0"/>
+        <Grid HorizontalAlignment="Left" Height="218" Margin="407,411,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="506">
+            <oxy:Plot x:Name="Plot2" Title="A Graph" Model="{Binding PlotModel2}" Margin="45,0,10,0"/>
+
         </Grid>
+        <TextBlock HorizontalAlignment="Left" Height="21" Margin="150,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Width="43" RenderTransformOrigin="0.653,0.762" ><Run FontWeight="Bold" Text="Setups" TextDecorations="Underline"/></TextBlock>
+
     </Grid>
 
 </Window>

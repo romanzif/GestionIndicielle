@@ -26,5 +26,6 @@ namespace GestionIndicielle
             InitializeComponent();
             this.DataContext = new MainWindowViewModel();
         }
+
     }
 }
