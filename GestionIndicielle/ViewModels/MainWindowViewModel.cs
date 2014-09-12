@@ -342,7 +342,14 @@ namespace GestionIndicielle.ViewModels
             SelectBalancement();
             SelectEstimation();
             SelectBudget();
-            generateWholeWindowOnChange(SelectedAssetsList);
+            if (SelectedAssetsList.Count < 2)
+            {
+                MessageBox.Show("Veuillez sélectionner 2 titres ou plus", "Erreur");
+            }
+            else
+            {
+                generateWholeWindowOnChange(SelectedAssetsList);
+            }
         }
 
         private void SelectBalancement()
