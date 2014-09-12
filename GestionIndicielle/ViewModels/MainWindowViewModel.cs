@@ -27,8 +27,6 @@ namespace GestionIndicielle.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
-        private DateTime _tGraphDebut = new DateTime(2006, 1, 2, 0, 0, 0);
-        private DateTime _tGraphFin = new DateTime(2013, 9, 3, 0, 0, 0);
         public double TrackError=0;
         public double RatioInfo=0;
 
@@ -68,29 +66,29 @@ namespace GestionIndicielle.ViewModels
             set { ; }
         }
 
-        public DateTime TGraphDebut
+        public DateTime TDebut
         {
-            get { return _tGraphDebut; }
+            get { return _tDebut; }
             set
             {
-                _tGraphDebut = value; 
-                Console.Write(_tGraphDebut);
+                _tDebut = value; 
+                Console.Write(_tDebut);
             }
         }
  
 
-        public DateTime TGraphFin
+        public DateTime TFin
         {
-            get { return _tGraphFin; }
+            get { return _tFin; }
             set
             {
-                if (DateTime.Compare(_tGraphDebut, value) < 0)
+                if (DateTime.Compare(_tDebut, value.AddDays(-int.Parse(PeriodeEstimation) - int.Parse(PeriodeRebalancement)*2)) < 0)
                 {
-                    _tGraphFin = value;
+                    _tFin = value;
                 }
                 else
                 {
-                    _tGraphFin = _tGraphDebut.AddDays(1);
+                    _tFin = _tDebut.AddDays(int.Parse(PeriodeEstimation)+int.Parse(PeriodeRebalancement)*2);
                 }
             }
         }
@@ -146,8 +144,8 @@ namespace GestionIndicielle.ViewModels
         public FormatMatrix FormatedBenchMatrix;
         public List<Portfolio> MyPortList;
         public List<Benchmark> BenchList;
-        public DateTime Tfin = new DateTime(2007, 5, 1, 0, 0, 0);
-        public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
+        private DateTime _tFin = new DateTime(2013, 9, 3, 0, 0, 0);
+        private DateTime _tDebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private DateTime[] _calendrier;
         private int currentGraphIndex;
         private string _graphIndex;
@@ -167,7 +165,7 @@ namespace GestionIndicielle.ViewModels
         public MainWindowViewModel()
         {
             Assets = new List<string>();
-            Assets = Parse.LoadAssets(Tdebut);
+            Assets = Parse.LoadAssets(TDebut);
             AssetList = new ObservableCollection<string>();
             foreach (var asset in Assets)
                 AssetList.Add(asset);
@@ -177,7 +175,7 @@ namespace GestionIndicielle.ViewModels
             BackCommand = new DelegateCommand(Back);
             ForwardCommand = new DelegateCommand(Forward);
             PeriodeEstimation = "50"; 
-            PeriodeRebalancement = "75";
+            PeriodeRebalancement = "100";
             Budget = "100";
             this.SelectedItems = new ObservableCollection<String>();
             this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
@@ -236,7 +234,7 @@ namespace GestionIndicielle.ViewModels
             set
             {
                 int i = 0;
-                for (DateTime j = Tdebut; DateTime.Compare(j, Tfin) < 0; j.AddDays(1))
+                for (DateTime j = TDebut; DateTime.Compare(j, TFin) < 0; j.AddDays(1))
                 {
                     if (j.DayOfWeek != DayOfWeek.Sunday && j.DayOfWeek != DayOfWeek.Saturday)
                     {
@@ -249,10 +247,10 @@ namespace GestionIndicielle.ViewModels
 
         public void generateWholeWindowOnChange(IList<string> dataList)
         {
-            D = new double[DaysIgnoreWeekends(Tdebut, Tfin), dataList.Count];
-            I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            D = Parse.LoadPrice(dataList, Tdebut, Tfin);
-            I=Parse.LoadIndice(dataList, Tdebut, Tfin);
+            D = new double[DaysIgnoreWeekends(TDebut, TFin), dataList.Count];
+            I = new double[DaysIgnoreWeekends(TDebut, TFin), 1];
+            D = Parse.LoadPrice(dataList, TDebut, TFin);
+            I=Parse.LoadIndice(dataList, TDebut, TFin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
@@ -313,15 +311,15 @@ namespace GestionIndicielle.ViewModels
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
         }
         
-        private int DaysIgnoreWeekends(DateTime tDebut, DateTime tFin)
+        private int DaysIgnoreWeekends(DateTime TDebut, DateTime TFin)
         {
-           TimeSpan days = tFin.Subtract(tDebut);
+           TimeSpan days = TFin.Subtract(TDebut);
            int count = 0;
            for (int a = 0; a < days.Days + 1; a++)
            {
-               if (tDebut.DayOfWeek != DayOfWeek.Saturday && tDebut.DayOfWeek != DayOfWeek.Sunday)
+               if (TDebut.DayOfWeek != DayOfWeek.Saturday && TDebut.DayOfWeek != DayOfWeek.Sunday)
                    count++;
-               tDebut = tDebut.AddDays(1.0);
+               TDebut = TDebut.AddDays(1.0);
            }
            Console.Write(count);
            return count;
@@ -329,12 +327,12 @@ namespace GestionIndicielle.ViewModels
 
         public void Begin(DateTime d)
         {
-            Tdebut = d;
+            TDebut = d;
         }
 
         public void End(DateTime d)
         {
-            Tfin = d;
+            TFin = d;
         }
 
         private void Click()
