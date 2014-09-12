@@ -177,7 +177,7 @@ namespace GestionIndicielle.ViewModels
             BackCommand = new DelegateCommand(Back);
             ForwardCommand = new DelegateCommand(Forward);
             PeriodeEstimation = "50"; 
-            PeriodeRebalancement = "75";
+            PeriodeRebalancement = "100";
             Budget = "100";
             this.SelectedItems = new ObservableCollection<String>();
             this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
