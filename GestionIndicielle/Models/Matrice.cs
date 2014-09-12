@@ -110,6 +110,61 @@ namespace GestionIndicielle.Models
             return covMatrix;
         }
 
+        [DllImport(pathToDll, EntryPoint = "WREmodelingSDLScorr", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int NORMmodelingSDLScorr(
+            ref int p,
+            double[,] Q,
+            ref double constPrecision,
+            ref double minEigenValue,
+            double[,] X,
+            ref int info
+            );
+
+        public static double[,] computeDPCorrMatrix(double[,] nonDPCorrMatrix)
+        {
+            int p = nonDPCorrMatrix.GetLength(0);
+            double constPrecision = 0.00000001;
+            double minEigenValue = 0.0000001;
+            var corrMatrix = new double[p, p];
+            int info = 0;
+            int returnFromNorm = NORMmodelingSDLScorr(ref p, nonDPCorrMatrix, ref constPrecision, ref minEigenValue, corrMatrix, ref info);
+            if (returnFromNorm != 0)
+            {
+                throw new Exception(); // Check out what went wrong here
+            }
+
+            return corrMatrix;
+        }
+
+        public static double[,] computeCovToCorr(double[,] CovMatrix)
+        {
+            int SizeMatrix = CovMatrix.GetLength(0);
+            var CorrMatrix = new double[SizeMatrix, SizeMatrix];
+            for (int i = 0; i < SizeMatrix; i++)
+            {
+                for (int j = 0; j < SizeMatrix; j++)
+                {
+                    CorrMatrix[i, j] = CovMatrix[i, j] / Math.Sqrt(CovMatrix[i, i] * CovMatrix[j, j]);
+                }
+            }
+            return CorrMatrix;
+        }
+
+        public static double[,] computeCorrToCov(double[,] CorrMatrix, double[] CovVector)
+        {
+            int SizeMatrix = CorrMatrix.GetLength(0);
+            var CovMatrix = new double[SizeMatrix, SizeMatrix];
+            for (int i = 0; i < SizeMatrix; i++)
+            {
+                for (int j = 0; j < SizeMatrix; j++)
+                {
+
+                    CovMatrix[i, j] = CorrMatrix[i, j] * Math.Sqrt(CovVector[i] * CovVector[j]);
+                }
+            }
+            return CovMatrix;
+        }
+
         [DllImport(pathToDll, EntryPoint = "WREallocIT", CallingConvention = CallingConvention.Cdecl)]
         public static extern int NORMallocIT(
             ref int nbAssets,
@@ -154,14 +209,27 @@ namespace GestionIndicielle.Models
             {
                 maxWeights[i] = 1;
             }
-            double relativeTargetReturn = 0;
+            double relativeTargetReturn = -0.001;
             int info = 0;
             var optimalWeights = new double[nbAssets];
 
             int returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
             if (returnFromNorm != 0)
             {
-                throw new Exception(); // Check out what went wrong here
+                    if (info == -108 && returnFromNorm == 5)
+                    {
+                        var CovVector = new double[covMat.GetLength(0)];
+                        for (int i = 0; i < CovVector.GetLength(0); i++)
+                        {
+                            CovVector[i] = covMat[i, i];
+                        }
+                        covMat = computeCorrToCov(computeDPCorrMatrix(computeCovToCorr(covMat)), CovVector);
+                        returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+                    }
+                    else
+                    {
+                        throw new Exception(); // Check out what went wrong here
+                    }
             }
             return optimalWeights;
         }
