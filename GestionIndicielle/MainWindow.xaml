@@ -12,9 +12,9 @@
         </Grid.RowDefinitions>
 
         <DatePicker x:Name="Date_de_début" HorizontalAlignment="Left"
-            SelectedDate="{Binding TGraphDebut, Mode=TwoWay}"
+            SelectedDate="{Binding TDebut, Mode=TwoWay}"
 		    Text="Date de début"
-            Margin="562,115,0,0"
+            Margin="481,115,0,0"
 		    VerticalAlignment="Top"
 		    RenderTransformOrigin="0.497,1.083" Background="#FF1B3281" DisplayDateStart="2006-01-02" Grid.Row="1" Height="24" Width="150">
             <DatePicker.BorderBrush>
@@ -27,8 +27,8 @@
             </DatePicker.BorderBrush>
         </DatePicker>
         <DatePicker x:Name="Date_de_fin" HorizontalAlignment="Right"
-            SelectedDate="{Binding TGraphFin, Mode=TwoWay}"
-		    Margin="0,115,839,0"
+            SelectedDate="{Binding TFin, Mode=TwoWay}"
+		    Margin="0,115,573,0"
             Text="Date de fin"
 		    VerticalAlignment="Top"
 		    RenderTransformOrigin="0.497,1.083" Background="#FF112B83" DisplayDateStart="2006-01-17" Grid.Row="1" Height="24" Width="150"/>
