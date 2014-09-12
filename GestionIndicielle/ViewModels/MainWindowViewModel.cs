@@ -134,11 +134,12 @@ namespace GestionIndicielle.ViewModels
         public ICommand BackCommand { get; private set; }
         public ICommand ForwardCommand { get; private set; }
         public double[,] D, I;
+        private string[] Assets;
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
         public List<Portfolio> MyPortList;
         public List<Benchmark> BenchList;
-        public DateTime Tfin = new DateTime(2010, 1, 17, 0, 0, 0);
+        public DateTime Tfin = new DateTime(2007, 5, 1, 0, 0, 0);
         public DateTime Tdebut = new DateTime(2006, 1, 2, 0, 0, 0);
         private DateTime[] _calendrier;
         private int currentGraphIndex;
@@ -216,10 +217,11 @@ namespace GestionIndicielle.ViewModels
 
         public void generateWholeWindowOnChange()
         {
-            D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 29];
+            D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 2];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            Parse.LoadPrice(D, Tdebut, Tfin);
-            Parse.LoadIndice(I, Tdebut, Tfin);
+            Assets = new string[2];
+            D = Parse.LoadPrice(Assets, Tdebut, Tfin);
+            I=Parse.LoadIndice(Assets, Tdebut, Tfin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
@@ -374,8 +376,6 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel = tmp;
-            PlotModel.LegendPosition = LegendPosition.LeftBottom;
-            PlotModel.LegendPlacement = LegendPlacement.Outside;
             this.PlotModel.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
             this.PlotModel.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20});
 
@@ -383,7 +383,7 @@ namespace GestionIndicielle.ViewModels
 
         private void LoadData2(double[] valPortef, double[] valBenchmark)
         {
-            var tmp = new PlotModel { Title = "Rendement" };
+            var tmp = new PlotModel { Title = "Valeur du portefeuille vs Benchmark (Zoom)" };
 
             var series1 = new OxyPlot.Series.LineSeries { Title = "Portefeuille", MarkerType = MarkerType.Circle };
             for (int i = 0; i < valPortef.Length; i++)
@@ -401,7 +401,7 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series2);
             this.PlotModel2 = tmp;
             this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
-
+            this.PlotModel2.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20 });
         }
       
     }
