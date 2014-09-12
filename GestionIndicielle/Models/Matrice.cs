@@ -236,7 +236,6 @@ namespace GestionIndicielle.Models
             var optimalWeights = new double[nbAssets];
 
             int returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
-            int infoWeights = info;
             if (returnFromNormWeights != 0)
             {
                 
@@ -249,13 +248,10 @@ namespace GestionIndicielle.Models
                     }
                     covMat = computeCorrToCov(computeDPCorrMatrix(computeCovToCorr(covMat)), CovVector);
                     returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
-                }else
-                {
-                    InfoWeights = infoWeights;
-                    ReturnFromNormWeights = returnFromNormWeights;
                 }
-
             }
+            InfoWeights = info;
+            ReturnFromNormWeights = returnFromNormWeights;
             return optimalWeights;
         }
 

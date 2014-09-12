@@ -274,7 +274,7 @@ namespace GestionIndicielle.ViewModels
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
             double budget = double.Parse(Budget, CultureInfo.InvariantCulture);
-            double rtr = double.Parse(RelativeTargetReturn,, CultureInfo.InvariantCulture);
+            double rtr = double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
@@ -340,7 +340,13 @@ namespace GestionIndicielle.ViewModels
         {
             foreach (var portfolio in MyPortList)
             {
-                if (portfolio.PortfolioMatrix.InfoCov != 0  || portfolio.PortfolioMatrix.ReturnFromNormCov != 0)
+                if (portfolio.PortfolioMatrix.InfoCov == 0 && portfolio.PortfolioMatrix.ReturnFromNormCov == 301)
+                {
+                    MessageBox.Show("Données générées invalides,  \n" +
+                                    "veuillez entrer une période d'estimation supérieure ou égale à 3", "Fatal Error");
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoCov != 0  || portfolio.PortfolioMatrix.ReturnFromNormCov != 0)
                 {
                     MessageBox.Show("erreur cov non gérée", "Fatal Error");
                     break;
@@ -354,13 +360,15 @@ namespace GestionIndicielle.ViewModels
                     break;
                 }
                 else if (portfolio.PortfolioMatrix.InfoWeights == -108 &&
-                         portfolio.PortfolioMatrix.ReturnFromNormWeights != 5)
+                         portfolio.PortfolioMatrix.ReturnFromNormWeights == 5)
                 {
+                    if (!stopMessage)
+                        MessageBox.Show("Les données générées avec la période d'estimation fournie étaient invalides.\n" +
+                                    "Les données que nous fournissons sont celles avec la plus petite période d'estimation possible.\n", "Information");
+                    stopMessage = true;
                     PeriodeEstimation = (int.Parse(PeriodeEstimation)+1).ToString();
                     generateWholeWindowOnChange(SelectedAssetsList);
-                    MessageBox.Show("Les données générées avec la période d'estimation fournie étaient invalides.\n" +
-                                    "Les données que nous fournissons son celles \n" +
-                                    "avec la plus petite période d'estimation "+PeriodeEstimation+" possible.\n", "Information");
+                    
                     break;
                 }
                 else if (portfolio.PortfolioMatrix.InfoWeights != 0 || portfolio.PortfolioMatrix.ReturnFromNormWeights != 0)
@@ -371,6 +379,8 @@ namespace GestionIndicielle.ViewModels
              
             }
         }
+
+        public bool stopMessage = false;
         private int DaysIgnoreWeekends(DateTime TDebut, DateTime TFin)
         {
            TimeSpan days = TFin.Subtract(TDebut);
@@ -401,6 +411,7 @@ namespace GestionIndicielle.ViewModels
             SelectEstimation();
             SelectBudget();
             bool error = false;
+            stopMessage = false;
             if (SelectedAssetsList.Count < 2)
             {
                 MessageBox.Show("Veuillez sélectionner 2 titres ou plus", "Erreur");
@@ -423,15 +434,10 @@ namespace GestionIndicielle.ViewModels
             try
             {
                 double rel = Double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
-                if (rel <= 0)
-                {
-                    MessageBox.Show(rel + " n'est pas un relative targer return", "Erreur");
-                    error = true;
-                }
             }
             catch
             {
-                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 100.67", "Erreur Budget");
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 0.067", "Erreur Relative Target Return");
                 error = true;
             }
             try
