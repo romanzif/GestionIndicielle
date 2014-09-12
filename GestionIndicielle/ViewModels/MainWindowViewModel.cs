@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media.Animation;
 using Microsoft.Practices.Prism.Mvvm;
 using System.Windows.Input;
@@ -134,7 +136,8 @@ namespace GestionIndicielle.ViewModels
         public ICommand BackCommand { get; private set; }
         public ICommand ForwardCommand { get; private set; }
         public double[,] D, I;
-        private string[] Assets;
+        private List<string> Assets;
+
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
         public List<Portfolio> MyPortList;
@@ -145,12 +148,16 @@ namespace GestionIndicielle.ViewModels
         private int currentGraphIndex;
         private string _graphIndex;
 
+        
+
+
         public string GraphIndex
         {
             get { return _graphIndex; }
             set { _graphIndex = value; OnPropertyChanged(()=>GraphIndex); }
         }
 
+        public IList<string> SelectedItems; 
 
 
         public MainWindowViewModel()
@@ -163,6 +170,7 @@ namespace GestionIndicielle.ViewModels
             PeriodeEstimation = "50"; // 2semaines 
             PeriodeRebalancement = "75"; //2mois
             Budget = "100";
+            SelectedItems = new List<string>();
             generateWholeWindowOnChange();
         }
 
@@ -217,11 +225,11 @@ namespace GestionIndicielle.ViewModels
 
         public void generateWholeWindowOnChange()
         {
+            Assets = Parse.LoadAssets(Tdebut);
             D = new double[DaysIgnoreWeekends(Tdebut, Tfin), 2];
             I = new double[DaysIgnoreWeekends(Tdebut, Tfin), 1];
-            Assets = new string[2];
-            D = Parse.LoadPrice(Assets, Tdebut, Tfin);
-            I=Parse.LoadIndice(Assets, Tdebut, Tfin);
+            D = Parse.LoadPrice(SelectedItems, Tdebut, Tfin);
+            I=Parse.LoadIndice(SelectedItems, Tdebut, Tfin);
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();

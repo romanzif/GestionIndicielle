@@ -18,23 +18,43 @@ namespace GestionIndicielle.Parser
    
     class Parse
     {
-        
-        public static double[,]  LoadPrice( string [] titres,DateTime tDeb, DateTime tFin)
+        public static List<string> LoadAssets(DateTime tDebut)
         {
             using (parseurDataContext pdc = new parseurDataContext())
             {
+                IQueryable<string> values = from n in pdc.HistoComponents
+                                            where n.date==tDebut
+                                            select n.name;
+                List<string> List = new List<string>();
+                foreach (string str in values)
+                {
+                    List.Add(str);
+                }
+                return List;
+            }
+
+        }
+        public static double[,]  LoadPrice( IList<string> titres,DateTime tDeb, DateTime tFin)
+        {
+            var titreAsArray = new string[titres.Count];
+            for (int i = 0; i < titres.Count; i++)
+            {
+                titreAsArray[i] = titres[i];
+            }
+            using (parseurDataContext pdc = new parseurDataContext())
+            {
                     IQueryable<double> values = from n in pdc.HistoComponents
-                    where DateTime.Compare(n.date, tFin ) <=0  && DateTime.Compare(n.date,tDeb)>=0 && titres.Contains(n.name)
+                    where DateTime.Compare(n.date, tFin ) <=0  && DateTime.Compare(n.date,tDeb)>=0 && titreAsArray.Contains(n.name)
                     orderby   n.date
                     orderby n.name
                     select n.value;
 
                 IQueryable<DateTime> date = from n in pdc.HistoComponents
-                    where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0 && titres.Contains(n.name)
+                    where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0 && titreAsArray.Contains(n.name)
                     select n.date;
 
-                int dates = date.Count()/titres.Length;
-                double[,] data=new double[dates,titres.Length];
+                int dates = date.Count()/titres.Count;
+                double[,] data=new double[dates,titres.Count];
 
                 IEnumerator<double> e=new DoubleCollection.Enumerator();
                 e = values.GetEnumerator();
@@ -53,8 +73,13 @@ namespace GestionIndicielle.Parser
             
         }
 
-        public static double[,] LoadIndice(string [] titres, DateTime tDeb, DateTime tFin)
+        public static double[,] LoadIndice(IList<string> titres, DateTime tDeb, DateTime tFin)
         {
+            var titreAsArray = new string[titres.Count];
+            for (int i = 0; i < titres.Count; i++)
+            {
+                titreAsArray[i] = titres[i];
+            }
             using (parseurDataContext pdc = new parseurDataContext())
             {
                 IQueryable<double> values = from n in pdc.HistoIndices
@@ -63,10 +88,10 @@ namespace GestionIndicielle.Parser
             select n.value;
 
                 IQueryable<DateTime> date = from n in pdc.HistoComponents
-                                            where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0 && titres.Contains(n.name)
+                                            where DateTime.Compare(n.date, tFin) <= 0 && DateTime.Compare(n.date, tDeb) >= 0 && titreAsArray.Contains(n.name)
                                             select n.date;
 
-                int dates = date.Count()/titres.Length;
+                int dates = date.Count()/titres.Count;
                 double [,] data = new double[dates,1];
 
                 IEnumerator<double> e = new DoubleCollection.Enumerator();
