@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.RightsManagement;
@@ -272,8 +273,8 @@ namespace GestionIndicielle.ViewModels
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
-            double budget = double.Parse(Budget);
-            double rtr = double.Parse(RelativeTargetReturn);
+            double budget = double.Parse(Budget, CultureInfo.InvariantCulture);
+            double rtr = double.Parse(RelativeTargetReturn,, CultureInfo.InvariantCulture);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
@@ -284,7 +285,7 @@ namespace GestionIndicielle.ViewModels
                 budget = currentPort.PortfolioValues[index];
             }
             BenchList = new List<Benchmark>();
-            budget = double.Parse(Budget);
+            budget = double.Parse(Budget, CultureInfo.InvariantCulture);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i], budget);
@@ -407,10 +408,25 @@ namespace GestionIndicielle.ViewModels
             }
             try
             {
-                double budget = Double.Parse(Budget);
+                double budget = Double.Parse(Budget, CultureInfo.InvariantCulture);
                 if (budget <= 0)
                 {
                     MessageBox.Show(budget + " n'est pas un budget valide", "Erreur");
+                    error = true;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 100.67", "Erreur Budget");
+                error = true;
+            }
+            try
+            {
+                double rel = Double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
+                if (rel <= 0)
+                {
+                    MessageBox.Show(rel + " n'est pas un relative targer return", "Erreur");
+                    error = true;
                 }
             }
             catch
@@ -424,6 +440,7 @@ namespace GestionIndicielle.ViewModels
                 if (estim <= 0)
                 {
                     MessageBox.Show(estim + " n'est pas une période d'estimation valide", "Erreur");
+                    error = true;
                 }
             }
             catch
@@ -437,6 +454,7 @@ namespace GestionIndicielle.ViewModels
                 if (reb <= 0)
                 {
                     MessageBox.Show(reb + " n'est pas une période de rebalancement valide", "Erreur");
+                    error = true;
                 }
             }
             catch
