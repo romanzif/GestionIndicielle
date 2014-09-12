@@ -82,13 +82,13 @@ namespace GestionIndicielle.ViewModels
             get { return _tFin; }
             set
             {
-                if (DateTime.Compare(_tDebut, value) < 0)
+                if (DateTime.Compare(_tDebut, value.AddDays(-int.Parse(PeriodeEstimation) - int.Parse(PeriodeRebalancement)*2)) < 0)
                 {
                     _tFin = value;
                 }
                 else
                 {
-                    _tFin = _tDebut.AddDays(1);
+                    _tFin = _tDebut.AddDays(int.Parse(PeriodeEstimation)+int.Parse(PeriodeRebalancement)*2);
                 }
             }
         }

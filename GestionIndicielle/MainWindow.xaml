@@ -85,6 +85,8 @@
 
         </Grid>
         <TextBlock HorizontalAlignment="Left" Height="21" Margin="150,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Width="43" RenderTransformOrigin="0.653,0.762" ><Run FontWeight="Bold" Text="Setups" TextDecorations="Underline"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Height="21" Margin="481,87,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Date de début" VerticalAlignment="Top" Width="145" FontWeight="Bold" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Height="21" Margin="673,87,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Date de fin" VerticalAlignment="Top" Width="150" FontWeight="Bold" TextAlignment="Center"/>
 
     </Grid>
 
