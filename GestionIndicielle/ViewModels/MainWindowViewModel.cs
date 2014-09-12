@@ -27,6 +27,7 @@ namespace GestionIndicielle.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
+        private string _RTR;
         public double TrackError=0;
         public double RatioInfo=0;
 
@@ -93,6 +94,22 @@ namespace GestionIndicielle.ViewModels
             }
         }
 
+        public string RelativeTargetReturn
+        {
+            get
+            {
+                return _RTR;
+            }
+            set
+            {
+                if (_RTR != value)
+                {
+                    _RTR = value;
+                    OnPropertyChanged(() => RelativeTargetReturn);
+
+                }
+            }
+        }
 
         public string  PeriodeEstimation
         {
@@ -176,6 +193,7 @@ namespace GestionIndicielle.ViewModels
             ForwardCommand = new DelegateCommand(Forward);
             PeriodeEstimation = "50"; 
             PeriodeRebalancement = "100";
+            RelativeTargetReturn = "0";
             Budget = "100";
             this.SelectedItems = new ObservableCollection<String>();
             this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
@@ -255,10 +273,11 @@ namespace GestionIndicielle.ViewModels
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
             double budget = double.Parse(Budget);
+            double rtr = double.Parse(RelativeTargetReturn);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
-                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget
+                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget, rtr
                     );
                 MyPortList.Add(currentPort);
                 int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
