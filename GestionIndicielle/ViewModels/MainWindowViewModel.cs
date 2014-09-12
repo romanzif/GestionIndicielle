@@ -209,7 +209,7 @@ namespace GestionIndicielle.ViewModels
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
             double[] essai = MyPortList[currentGraphIndex].PortfolioValues;
             double[] essai2 = BenchList[currentGraphIndex].BenchmarkValue;
-            LoadData2(essai, essai2);
+            UpdateData2(essai, essai2);
         }
 
         public void Forward()
@@ -377,9 +377,9 @@ namespace GestionIndicielle.ViewModels
             PlotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             PlotModel.LegendBorder = OxyColors.Black;
 
-            var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
+            var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot};
             PlotModel.Axes.Add(dateAxis);
-            var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
+            var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
             PlotModel.Axes.Add(valueAxis);
 
             PlotModel2.LegendTitle = "Portefeuille vs Benchmark";
@@ -389,9 +389,9 @@ namespace GestionIndicielle.ViewModels
             PlotModel2.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             PlotModel2.LegendBorder = OxyColors.Black;
 
-            var dateAxis2 = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
+            var dateAxis2 = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot};
             PlotModel2.Axes.Add(dateAxis2);
-            var valueAxis2 = new OxyPlot.Axes.LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
+            var valueAxis2 = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
             PlotModel2.Axes.Add(valueAxis2);
         }
 
@@ -437,9 +437,31 @@ namespace GestionIndicielle.ViewModels
             tmp.Series.Add(series1);
             tmp.Series.Add(series2);
             this.PlotModel2 = tmp;
-            this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 });
-            this.PlotModel2.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 20 });
+            this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot});
+            this.PlotModel2.Axes.Add(new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value"});
         }
-      
+
+        private void UpdateData2(double[] valPortef, double[] valBenchmark)
+        {
+            var tmp = new PlotModel { Title = "Valeur du portefeuille vs Benchmark (Zoom)" };
+
+            var series1 = new OxyPlot.Series.LineSeries { Title = "Portefeuille", MarkerType = MarkerType.Circle };
+            for (int i = 0; i < valPortef.Length; i++)
+            {
+                series1.Points.Add(new DataPoint(i, valPortef[i]));
+            }
+
+            var series2 = new OxyPlot.Series.LineSeries { Title = "Benchmark", MarkerType = MarkerType.Circle };
+            for (int i = 0; i < valBenchmark.Length; i++)
+            {
+                series2.Points.Add(new DataPoint(i, valBenchmark[i]));
+            }
+
+            tmp.Series.Add(series1);
+            tmp.Series.Add(series2);
+            this.PlotModel2 = tmp;
+            //this.PlotModel2.Axes.Clear();
+            //this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
+        }
     }
 }
