@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace GestionIndicielle.Models
 {
@@ -102,10 +103,13 @@ namespace GestionIndicielle.Models
             int nbAssets = returns.GetLength(1);
             double[,] covMatrix = new double[nbAssets, nbAssets];
             int info = 0;
-            int returnFromNorm = NORMmodelingCov(ref dataSize, ref nbAssets, returns, covMatrix, ref info);
-            if (returnFromNorm != 0)
+            int returnFromNormCov = NORMmodelingCov(ref dataSize, ref nbAssets, returns, covMatrix, ref info);
+            int infoCov = info;
+            if (returnFromNormCov != 0)
             {
-                throw new Exception(); // Check out what went wrong here
+                MessageBox.Show("La fenetre d'estimation doit être supérieure ou égale à 3 jours.\n" +
+                                "Les données générées sont invalides.\n" +
+                                "Veuillez augmenter la fenetre d'estimation.\n", "Fatal Error");
             }
             return covMatrix;
         }
@@ -213,23 +217,33 @@ namespace GestionIndicielle.Models
             int info = 0;
             var optimalWeights = new double[nbAssets];
 
-            int returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
-            if (returnFromNorm != 0)
+            int returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+            int infoWeights = info;
+            if (returnFromNormWeights != 0)
             {
-                    if (info == -108 && returnFromNorm == 5)
+                if (returnFromNormWeights == 5 && infoWeights == -100)
+                {
+                    MessageBox.Show("Relative Target Return Invalid", "Fatal Error");
+                }
+                else if (info == -108 && returnFromNormWeights == 5)
+                {
+                    var CovVector = new double[covMat.GetLength(0)];
+                    for (int i = 0; i < CovVector.GetLength(0); i++)
                     {
-                        var CovVector = new double[covMat.GetLength(0)];
-                        for (int i = 0; i < CovVector.GetLength(0); i++)
-                        {
-                            CovVector[i] = covMat[i, i];
-                        }
-                        covMat = computeCorrToCov(computeDPCorrMatrix(computeCovToCorr(covMat)), CovVector);
-                        returnFromNorm = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+                        CovVector[i] = covMat[i, i];
                     }
-                    else
-                    {
-                        throw new Exception(); // Check out what went wrong here
-                    }
+                    covMat = computeCorrToCov(computeDPCorrMatrix(computeCovToCorr(covMat)), CovVector);
+                    returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+                }else
+                {
+                    throw new Exception(); // Check out what went wrong here
+                }
+                if (returnFromNormWeights == 5 && infoWeights == -108)
+                {
+                    MessageBox.Show("Les données générées sont invalides.\n" +
+                                "Veuillez augmenter la fenetre d'estimation.\n", "Fatal Error");
+                }
+                
             }
             return optimalWeights;
         }
