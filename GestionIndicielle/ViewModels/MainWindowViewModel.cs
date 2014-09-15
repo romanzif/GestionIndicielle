@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.RightsManagement;
@@ -27,6 +28,7 @@ namespace GestionIndicielle.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private string _periodeEstimation, _periodeRebalancement,_budget;
+        private string _RTR;
         public double TrackError=0;
         public double RatioInfo=0;
 
@@ -93,6 +95,22 @@ namespace GestionIndicielle.ViewModels
             }
         }
 
+        public string RelativeTargetReturn
+        {
+            get
+            {
+                return _RTR;
+            }
+            set
+            {
+                if (_RTR != value)
+                {
+                    _RTR = value;
+                    OnPropertyChanged(() => RelativeTargetReturn);
+
+                }
+            }
+        }
 
         public string  PeriodeEstimation
         {
@@ -176,6 +194,7 @@ namespace GestionIndicielle.ViewModels
             ForwardCommand = new DelegateCommand(Forward);
             PeriodeEstimation = "50"; 
             PeriodeRebalancement = "100";
+            RelativeTargetReturn = "0";
             Budget = "100";
             this.SelectedItems = new ObservableCollection<String>();
             this.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
@@ -254,18 +273,19 @@ namespace GestionIndicielle.ViewModels
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             MyPortList = new List<Portfolio>();
-            double budget = double.Parse(Budget);
+            double budget = double.Parse(Budget, CultureInfo.InvariantCulture);
+            double rtr = double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
-                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget
+                    FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget, rtr
                     );
                 MyPortList.Add(currentPort);
                 int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
                 budget = currentPort.PortfolioValues[index];
             }
             BenchList = new List<Benchmark>();
-            budget = double.Parse(Budget);
+            budget = double.Parse(Budget, CultureInfo.InvariantCulture);
             for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
             {
                 var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i], budget);
@@ -313,8 +333,54 @@ namespace GestionIndicielle.ViewModels
 
             currentGraphIndex = 0;
             GraphIndex = "Rebalancement " + (currentGraphIndex + 1).ToString();
+            checkForBugs();
         }
-        
+
+        public void checkForBugs()
+        {
+            foreach (var portfolio in MyPortList)
+            {
+                if (portfolio.PortfolioMatrix.InfoCov == 0 && portfolio.PortfolioMatrix.ReturnFromNormCov == 301)
+                {
+                    MessageBox.Show("Données générées invalides,  \n" +
+                                    "veuillez entrer une période d'estimation supérieure ou égale à 3", "Fatal Error");
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoCov != 0  || portfolio.PortfolioMatrix.ReturnFromNormCov != 0)
+                {
+                    MessageBox.Show("erreur cov non gérée", "Fatal Error");
+                    break;
+                }
+            }
+            foreach (var portfolio in MyPortList)
+            {
+                if (portfolio.PortfolioMatrix.InfoWeights == -100 && portfolio.PortfolioMatrix.ReturnFromNormWeights == 5)
+                {
+                    MessageBox.Show("Relative Target Return Invalid", "Fatal Error");
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoWeights == -108 &&
+                         portfolio.PortfolioMatrix.ReturnFromNormWeights == 5)
+                {
+                    if (!stopMessage)
+                        MessageBox.Show("Les données générées avec la période d'estimation fournie étaient invalides.\n" +
+                                    "Les données que nous fournissons sont celles avec la plus petite période d'estimation possible.\n", "Information");
+                    stopMessage = true;
+                    PeriodeEstimation = (int.Parse(PeriodeEstimation)+1).ToString();
+                    generateWholeWindowOnChange(SelectedAssetsList);
+                    
+                    break;
+                }
+                else if (portfolio.PortfolioMatrix.InfoWeights != 0 || portfolio.PortfolioMatrix.ReturnFromNormWeights != 0)
+                {
+                    MessageBox.Show("erreur weights non gérée", "Fatal Error");
+                    break;
+                }
+             
+            }
+        }
+
+        public bool stopMessage = false;
         private int DaysIgnoreWeekends(DateTime TDebut, DateTime TFin)
         {
            TimeSpan days = TFin.Subtract(TDebut);
@@ -344,14 +410,68 @@ namespace GestionIndicielle.ViewModels
             SelectBalancement();
             SelectEstimation();
             SelectBudget();
+            bool error = false;
+            stopMessage = false;
             if (SelectedAssetsList.Count < 2)
             {
                 MessageBox.Show("Veuillez sélectionner 2 titres ou plus", "Erreur");
+                error = true;
             }
-            else
+            try
             {
-                generateWholeWindowOnChange(SelectedAssetsList);
+                double budget = Double.Parse(Budget, CultureInfo.InvariantCulture);
+                if (budget <= 0)
+                {
+                    MessageBox.Show(budget + " n'est pas un budget valide", "Erreur");
+                    error = true;
+                }
             }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 100.67", "Erreur Budget");
+                error = true;
+            }
+            try
+            {
+                double rel = Double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un double. exemple: 0.067", "Erreur Relative Target Return");
+                error = true;
+            }
+            try
+            {
+                double estim = int.Parse(PeriodeEstimation) ;
+                if (estim <= 0)
+                {
+                    MessageBox.Show(estim + " n'est pas une période d'estimation valide", "Erreur");
+                    error = true;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un integer. exemple: 100", "Erreur Periode Estimation");
+                error = true;
+            }
+            try
+            {
+                double reb = int.Parse(PeriodeRebalancement) ;
+                if (reb <= 0)
+                {
+                    MessageBox.Show(reb + " n'est pas une période de rebalancement valide", "Erreur");
+                    error = true;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Syntaxe invalide, veuillez entrer un integer. exemple: 100", "Erreur Periode Rebalancement");
+                error = true;
+            }
+
+            if (!error)
+                generateWholeWindowOnChange(SelectedAssetsList);
+       
         }
 
         private void SelectBalancement()
