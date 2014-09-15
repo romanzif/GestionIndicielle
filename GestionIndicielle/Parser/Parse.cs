@@ -34,6 +34,28 @@ namespace GestionIndicielle.Parser
             }
 
         }
+
+        public static DateTime[] LoadDate()
+        {
+            using (parseurDataContext pdc = new parseurDataContext())
+            {
+                IQueryable<DateTime> values = from n in pdc.HistoComponents
+                                            where n.name=="AC.PA"
+                                            select n.date;
+                DateTime[] TableauDates = new DateTime[values.Count()];
+                IEnumerator<DateTime> e ;
+
+                e = values.GetEnumerator();
+                e.MoveNext();
+                for (int i = 0; i < TableauDates.Length;i++ )
+                {
+                    TableauDates[i]=e.Current;
+                    e.MoveNext();
+                }
+                return TableauDates;
+            }
+
+        }
         public static double[,]  LoadPrice( IList<string> titres,DateTime tDeb, DateTime tFin)
         {
             var titreAsArray = new string[titres.Count];
