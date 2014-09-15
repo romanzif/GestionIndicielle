@@ -4,7 +4,7 @@
         xmlns:oxy="http://oxyplot.codeplex.com"
         xmlns:infrastrucure="clr-namespace:GestionIndicielle.Infrastrucure"
         Height="671.5" Width="1194" SnapsToDevicePixels="True">
-    
+
     <Window.Background>
         <ImageBrush ImageSource="Images/design.jpg" />
     </Window.Background>
@@ -62,13 +62,15 @@
         <TextBlock ToolTip="en nombre de jours ouvrés" TextWrapping="Wrap" Height="21" Text="Periode d'estimation" VerticalAlignment="Top" Margin="50,152,1311,0" Grid.Row="1"/>
         <TextBlock ToolTip="en nombre de jours ouvrés" HorizontalAlignment="Left" Height="24" Margin="50,178,0,0" TextWrapping="Wrap" Text="Période de balancement" VerticalAlignment="Top" Grid.Row="1" Width="129" />
         <TextBlock ToolTip="saisissez votre budget initial (ex : 105,47)" HorizontalAlignment="Left" Height="21" Margin="50,126,0,0" TextWrapping="Wrap" Text="Budget Initial" VerticalAlignment="Top" Grid.Row="1" Width="98" RenderTransformOrigin="0.653,0.762" />
-        <TextBox ToolTip="saisissez votre budget initial (ex : 105,47)" HorizontalAlignment="Left" Height="21" Margin="197,126,0,0" TextWrapping="Wrap" Text="{Binding Budget, Mode=TwoWay}" VerticalAlignment="Top" Width="65" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
-        <TextBlock ToolTip="valeur de la tracking error pour les configurations saisies" HorizontalAlignment="Left" Height="24" Margin="537,107,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Tracking Error" VerticalAlignment="Top" Width="77" RenderTransformOrigin="0.864,0.458"/>
-        <TextBlock ToolTip="valeur du ratio d'information pour les configurations saisies" HorizontalAlignment="Left" Height="27" Margin="738,107,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Ratio d'information" VerticalAlignment="Top" Width="113" RenderTransformOrigin="0.736,0.556"/>
-        <TextBox ToolTip="valeur du ratio d'information pour les configurations saisies" HorizontalAlignment="Left" Height="25" Margin="856,105,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding RatioInformation, Mode=TwoWay}" VerticalAlignment="Top" Width="75" IsReadOnly="True" RenderTransformOrigin="1.126,0.333"/>
-        <infrastrucure:ListBoxEx ToolTip="liste des titres disponibles" ItemsSource="{Binding AssetList}" Width="150" Height="223" HorizontalAlignment="Left" Margin="71,342,0,0" SelectionMode="Multiple" Grid.Row="1"  VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" SelectedItems="{Binding SelectedItems}"/>
-        <TextBox HorizontalAlignment="Left" Height="22" ToolTip="valeur de la tracking error pour les configurations saisies" Margin="619,107,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding TrackingError, Mode=TwoWay}" VerticalAlignment="Top" Width="78" IsReadOnly="True" RenderTransformOrigin="1.268,0.458"/>
-        <TextBlock HorizontalAlignment="Left" Height="59" Margin="445,0,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" Foreground="White" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
+
+        <TextBox ToolTip="saisissez votre budget initial (ex : 105,47)" HorizontalAlignment="Left" Height="21" Margin="197,126,0,0" TextWrapping="Wrap" Text="{Binding Path = Budget,Mode=TwoWay}" VerticalAlignment="Top" Width="65" Grid.Row="1" RenderTransformOrigin="-6.762,-4.74"/>
+        <TextBlock ToolTip="valeur de la tracking error pour les configurations saisies" HorizontalAlignment="Left" Height="24" Margin="558,105,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Tracking Error" VerticalAlignment="Top" Width="77" RenderTransformOrigin="0.864,0.458"/>
+        <TextBlock ToolTip="valeur du ratio d'information pour les configurations saisies" HorizontalAlignment="Left" Height="27" Margin="738,107,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Ratio d'informations" VerticalAlignment="Top" Width="113" RenderTransformOrigin="0.736,0.556"/>
+        <TextBox ToolTip="valeur du ratio d'information pour les configurations saisies" HorizontalAlignment="Left" Height="25" Margin="856,105,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=RatioInformation,Mode=TwoWay}" VerticalAlignment="Top" Width="75" IsReadOnly="True" RenderTransformOrigin="1.126,0.333"/>
+        <infrastrucure:ListBoxEx ToolTip="liste des titres disponibles" ItemsSource="{Binding AssetList}" Width="150" Height="237" HorizontalAlignment="Left" Margin="71,328,0,0" SelectionMode="Multiple" Grid.Row="1"  VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" infrastrucure:ListBoxEx.SelectedItems="{Binding SelectedItems}"/>
+        <TextBox HorizontalAlignment="Left" Height="22" ToolTip="valeur de la tracking error pour les configurations saisies" Margin="640,105,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Path=TrackingError,Mode=TwoWay}" VerticalAlignment="Top" Width="78" IsReadOnly="True" RenderTransformOrigin="1.268,0.458"/>
+        <TextBlock HorizontalAlignment="Left" Height="59" Margin="351,0,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Gestion Indicielle" VerticalAlignment="Top" Width="696" FontFamily="Impact" FontSize="48" TextAlignment="Center" TextOptions.TextHintingMode="Animated"/>
+
 
 
         <Grid HorizontalAlignment="Left" Height="248" Margin="328,145,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="804" RenderTransformOrigin="0.5,0.615">

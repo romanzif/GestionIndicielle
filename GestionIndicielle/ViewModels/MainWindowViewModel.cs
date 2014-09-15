@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -127,9 +128,8 @@ namespace GestionIndicielle.ViewModels
         }
 
         public ICommand OkCommand { get; private set; }
-        public ICommand BackCommand { get; private set; }
-        public ICommand ForwardCommand { get; private set; }
         public double[,] D, I;
+        public DateTime[] Date;
         private List<string> Assets;
 
         public FormatMatrix FormatedBigMatrix;
@@ -209,6 +209,7 @@ namespace GestionIndicielle.ViewModels
             I = new double[DaysIgnoreWeekends(TDebut, TFin), 1];
             D = Parse.LoadPrice(dataList, TDebut, TFin);
             I=Parse.LoadIndice(dataList, TDebut, TFin);
+            Date = Parse.LoadDate();
             FormatedBigMatrix = new FormatMatrix(D, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             FormatedBenchMatrix = new FormatMatrix(I, int.Parse(PeriodeEstimation), int.Parse(PeriodeRebalancement));
             
@@ -237,7 +238,7 @@ namespace GestionIndicielle.ViewModels
                     {
                         int currentIndex = i + 1;
                         relativeTargetRebReCalc += currentIndex + " ";
-                        relativeTargetReCalcResult += currentPort.PortfolioMatrix.RelativeTargetReturn + " ";
+                        relativeTargetReCalcResult += (currentPort.PortfolioMatrix.RelativeTargetReturn*100) + "% ";
                         change = true;
                     }
                     int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
@@ -489,8 +490,7 @@ namespace GestionIndicielle.ViewModels
             var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot};
             dateAxis.Minimum = OxyPlot.Axes.DateTimeAxis.ToDouble(TDebut);
             dateAxis.Maximum = OxyPlot.Axes.DateTimeAxis.ToDouble(TFin);
-            dateAxis.IntervalType = DateTimeIntervalType.Years;
-            dateAxis.MinorIntervalType = DateTimeIntervalType.Months;
+            dateAxis.IntervalType = DateTimeIntervalType.Months;
             PlotModel.Axes.Add(dateAxis);
             var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
             PlotModel.Axes.Add(valueAxis);
@@ -513,14 +513,25 @@ namespace GestionIndicielle.ViewModels
             var tmp = new PlotModel { Title = "Valeur du Portefeuille vs Benchmark "};
 
             var series1 = new OxyPlot.Series.LineSeries { Title = "Portefeuille", MarkerType = MarkerType.None };
+            int j = 0;
+            while (Date[j] != TDebut)
+            {
+                j++;
+            }
+            TimeSpan diff;
             for (int i =0; i<valPortef.Length; i++) {
-                series1.Points.Add(new DataPoint(i, valPortef[i]));
+                diff=Date[j+i]-new DateTime(1899,12,31,0,0,0);
+                series1.Points.Add(new DataPoint(diff.TotalDays, valPortef[i]));
+    
             }
 
             var series2 = new OxyPlot.Series.LineSeries { Title = "Benchmark", MarkerType = MarkerType.None };
+          
             for (int i = 0; i < valBenchmark.Length; i++)
             {
-                series2.Points.Add(new DataPoint(i, valBenchmark[i]));
+                diff=Date[j+i]-new DateTime(1899,12,31,0,0,0);
+                series2.Points.Add(new DataPoint(diff.TotalDays, valBenchmark[i]));
+             
             }
 
             tmp.Series.Add(series1);
@@ -529,8 +540,7 @@ namespace GestionIndicielle.ViewModels
             var dateAxis = new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
             //dateAxis.Minimum = OxyPlot.Axes.DateTimeAxis.ToDouble(TDebut);
             //dateAxis.Maximum = OxyPlot.Axes.DateTimeAxis.ToDouble(TFin);
-            dateAxis.IntervalType = DateTimeIntervalType.Years;
-            dateAxis.MinorIntervalType = DateTimeIntervalType.Months;
+            dateAxis.IntervalType = DateTimeIntervalType.Months;
             tmp.Axes.Add(dateAxis);
             var valueAxis = new OxyPlot.Axes.LinearAxis(AxisPosition.Left) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value", IntervalLength = 50 };
             tmp.Axes.Add(valueAxis);
@@ -543,15 +553,23 @@ namespace GestionIndicielle.ViewModels
             var tmp = new PlotModel { Title = "Rendements du portefeuille vs Benchmark" };
 
             var series1 = new OxyPlot.Series.LineSeries { Title = "Portefeuille", MarkerType = MarkerType.None };
+            int j = 0;
+            while (Date[j] != TDebut)
+            {
+                j++;
+            }
+            TimeSpan diff;
             for (int i = 0; i < valPortef.Length; i++)
             {
-                series1.Points.Add(new DataPoint(i, valPortef[i]));
+                diff = Date[j+i] - new DateTime(1899, 12, 31, 0, 0, 0);
+                series1.Points.Add(new DataPoint(diff.TotalDays, valPortef[i]));
             }
 
             var series2 = new OxyPlot.Series.LineSeries { Title = "Benchmark", MarkerType = MarkerType.None };
             for (int i = 0; i < valBenchmark.Length; i++)
             {
-                series2.Points.Add(new DataPoint(i, valBenchmark[i]));
+                diff = Date[j+i] - new DateTime(1899, 12, 31, 0, 0, 0);
+                series2.Points.Add(new DataPoint(diff.TotalDays, valBenchmark[i]));
             }
 
             tmp.Series.Add(series1);
@@ -590,4 +608,6 @@ namespace GestionIndicielle.ViewModels
             this.PlotModel2.Axes.Add(new OxyPlot.Axes.DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot });
         }
     }
+
+
 }
