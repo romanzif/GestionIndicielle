@@ -47,8 +47,10 @@ namespace GestionIndicielle.Models
 
         public double RelativeTargetReturn;
 
-        public Matrice(double[,] initMat, double[,]benchMat,  double RTR)
+        public int currentRebIndex;
+        public Matrice(double[,] initMat, double[,]benchMat,  double RTR,int index)
         {
+            currentRebIndex = index;
             RelativeTargetReturn = RTR;
             BenchMat = benchMat;
             MatTotal = new double[initMat.GetLength(0),initMat.GetLength(1)+1];
@@ -249,6 +251,26 @@ namespace GestionIndicielle.Models
                     covMat = computeCorrToCov(computeDPCorrMatrix(computeCovToCorr(covMat)), CovVector);
                     returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov , ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst,C,b,minWeights,maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
                 }
+                if (info == -100 && returnFromNormWeights == 5)
+                {
+                    RelativeChange = true;
+                    relativeTargetReturn = 1;
+                }
+                while (info == -100 && returnFromNormWeights == 5)
+                {
+                    relativeTargetReturn /= 10;
+                    returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov, ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst, C, b, minWeights, maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+                }
+                double dizaine = relativeTargetReturn;
+                relativeTargetReturn *= 10;
+                info = -100;
+                returnFromNormWeights = 5;
+                while (info == -100 && returnFromNormWeights == 5)
+                {
+                    relativeTargetReturn -= dizaine;
+                    returnFromNormWeights = NORMallocIT(ref nbAssets, covMat, returns, benchCov, ref benchExpectedReturns, ref nbEqConst, ref nbIneqConst, C, b, minWeights, maxWeights, ref relativeTargetReturn, optimalWeights, ref info);
+                }
+                RelativeTargetReturn = relativeTargetReturn;
             }
             InfoWeights = info;
             ReturnFromNormWeights = returnFromNormWeights;
@@ -256,6 +278,6 @@ namespace GestionIndicielle.Models
         }
 
         
-
+        public bool RelativeChange = false;
     }
 }

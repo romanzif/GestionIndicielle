@@ -63,7 +63,7 @@ namespace GestionIndicielle.ViewModels
             get
             {
                 RatioInfo *= 100;
-                return RatioInfo.ToString("#0.000", System.Globalization.CultureInfo.InvariantCulture) + "%"; ;
+                return RatioInfo.ToString("#0.000", System.Globalization.CultureInfo.InvariantCulture) + "%";
             }
             set { ; }
         }
@@ -135,7 +135,6 @@ namespace GestionIndicielle.ViewModels
         public FormatMatrix FormatedBigMatrix;
         public FormatMatrix FormatedBenchMatrix;
         public List<Portfolio> MyPortList;
-        public List<Benchmark> BenchList;
         private DateTime _tDebut, _tFin;
 
         public DateTime TFin
@@ -218,65 +217,65 @@ namespace GestionIndicielle.ViewModels
                 MessageBox.Show(
                     "Attention, la période choisie n'est pas assez importante en comparaison de la fenêtre d'estimation et de la période de rebalancement",
                     "Fatal Error");
+                stopMessage = true;
             }
             else
             {
                 MyPortList = new List<Portfolio>();
                 double budget = double.Parse(Budget, CultureInfo.InvariantCulture);
-                double rtr = double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture);
+                double rtr = double.Parse(RelativeTargetReturn, CultureInfo.InvariantCulture)/100;
+                string relativeTargetRebReCalc ="";
+                string relativeTargetReCalcResult ="";
+                bool change = false;
                 for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
                 {
                     var currentPort = new Portfolio(FormatedBigMatrix.RebalancementMatrixList[i],
-                        FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget, rtr
+                        FormatedBigMatrix.EstimationMatrixList[i], FormatedBenchMatrix.EstimationMatrixList[i], budget, rtr,i
                         );
                     MyPortList.Add(currentPort);
+                    if (currentPort.PortfolioMatrix.RelativeChange)
+                    {
+                        int currentIndex = i + 1;
+                        relativeTargetRebReCalc += currentIndex + " ";
+                        relativeTargetReCalcResult += currentPort.PortfolioMatrix.RelativeTargetReturn + " ";
+                        change = true;
+                    }
                     int index = FormatedBigMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
                     budget = currentPort.PortfolioValues[index];
                 }
-                BenchList = new List<Benchmark>();
-                budget = double.Parse(Budget, CultureInfo.InvariantCulture);
-                for (int i = 0; i < FormatedBigMatrix.RebalancementMatrixList.Count; i++)
-                {
-                    var currentBench = new Benchmark(FormatedBenchMatrix.RebalancementMatrixList[i], budget);
-                    BenchList.Add(currentBench);
-                    int index = FormatedBenchMatrix.RebalancementMatrixList[i].GetLength(0) - 1;
-                    budget = currentBench.BenchmarkValue[index];
-                }
-                double[,] P = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length, 1];
-                double[] PortAsArray = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length];
+                if (change)
+                        MessageBox.Show(
+                            "Le relative Target Return était trop important pour les rebalancements " + relativeTargetRebReCalc +".\n" +
+                            "Ils ont été fixé aux valeurs " + relativeTargetReCalcResult+".", "Information");
+                double[,] P = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length+1, 1];
+                double[] PortAsArray = new double[MyPortList.Count * MyPortList.First().PortfolioValues.Length +1];
+                P[0, 0] = double.Parse(Budget);
+                PortAsArray[0] = double.Parse(Budget);
                 for (int i = 0; i < MyPortList.Count; i++)
                 {
                     double[] currentPortValues = MyPortList[i].PortfolioValues;
                     for (int j = 0; j < currentPortValues.Length; j++)
                     {
-                        P[j + i * currentPortValues.Length, 0] = currentPortValues[j];
-                        PortAsArray[j + i * currentPortValues.Length] = currentPortValues[j];
-                    }
-                }
-                double[,] B = new double[BenchList.Count * BenchList.First().BenchmarkValue.Length, 1];
-                double[] BenchAsArray = new double[BenchList.Count * BenchList.First().BenchmarkValue.Length];
-                for (int i = 0; i < BenchList.Count; i++)
-                {
-                    double[] currentBenchValues = BenchList[i].BenchmarkValue;
-                    for (int j = 0; j < currentBenchValues.Length; j++)
-                    {
-                        B[j + i * currentBenchValues.Length, 0] = currentBenchValues[j];
-                        BenchAsArray[j + i * currentBenchValues.Length] = currentBenchValues[j];
+                            P[j + i*currentPortValues.Length +1, 0] = currentPortValues[j];
+                            PortAsArray[j + i*currentPortValues.Length+1] = currentPortValues[j];
                     }
                 }
 
+                
+                double [] benchArray = convertMatrixToArray(I, int.Parse(PeriodeEstimation) - 1, PortAsArray.Length + int.Parse(PeriodeEstimation)-1, I[int.Parse(PeriodeEstimation) - 1, 0] / double.Parse(Budget));
+                double[,] benchMatrix = convertArrayToMatrix(benchArray);
                 double[,] RendP = Matrice.computeRMatrix(P);
-                double[,] RendB = Matrice.computeRMatrix(B);
+                double[,] RendB = Matrice.computeRMatrix(benchMatrix);
                 TrackError = ErrorRatios.ComputeTrackingErrorExPost(RendP, RendB);
                 RatioInfo = ErrorRatios.ComputeRatioInformation(RendP, RendB);
                 OnPropertyChanged(() => TrackingError);
                 OnPropertyChanged(() => RatioInformation);
                 double[] essai = PortAsArray;
-                double[] essai2 = BenchAsArray;
+                double[] essai2 = benchArray;
                 SetUpModel();
                 LoadData(essai, essai2);
-                double[] RmoyPMatrix = convertMatrixToArray(RendP);
-                double[] RmoyBMatrix = convertMatrixToArray(RendB);
+                double[] RmoyPMatrix = convertMatrixToArray(RendP,0,RendP.GetLength(0),1);
+                double[] RmoyBMatrix = convertMatrixToArray(RendB,0,RendB.GetLength(0),1);
                 essai = RmoyPMatrix;
                 essai2 = RmoyBMatrix;
                 LoadData2(essai, essai2);
@@ -286,13 +285,21 @@ namespace GestionIndicielle.ViewModels
         }
 
 
-        public double[] convertMatrixToArray(double[,] matrix)
+        public double[] convertMatrixToArray(double[,] matrix, int firstIndex,int lastIndex,double divisionFactor)
         {
             if (matrix.GetLength(1) != 1)
                 MessageBox.Show("Attention, matrice ayant plus de 1 colonne lors de la conversion en vecteur", "Warning");
-            var res = new double[matrix.GetLength(0)];
-            for (int i = 0; i < matrix.GetLength(0); i++)
-                res[i] = matrix[i, 0];
+            var res = new double[lastIndex-firstIndex];
+            for (int i = firstIndex; i < lastIndex; i++)
+                res[i-firstIndex] = matrix[i, 0]/divisionFactor;
+            return res;
+        }
+
+        public double[,] convertArrayToMatrix(double[] array)
+        {
+            var res = new double[array.Length,1];
+            for (int i = 0; i < res.Length; i++)
+                res[i,0] = array[i];
             return res;
         }
 
@@ -303,7 +310,7 @@ namespace GestionIndicielle.ViewModels
                 if (portfolio.PortfolioMatrix.InfoCov == 0 && portfolio.PortfolioMatrix.ReturnFromNormCov == 301)
                 {
                     MessageBox.Show("Données générées invalides,  \n" +
-                                    "veuillez entrer une période d'estimation supérieure ou égale à 3", "Fatal Error");
+                                    "veuillez entrer une période d'estimation supérieure ou égale à 3", "Error");
                     break;
                 }
                 else if (portfolio.PortfolioMatrix.InfoCov != 0  || portfolio.PortfolioMatrix.ReturnFromNormCov != 0)
@@ -316,7 +323,7 @@ namespace GestionIndicielle.ViewModels
             {
                 if (portfolio.PortfolioMatrix.InfoWeights == -100 && portfolio.PortfolioMatrix.ReturnFromNormWeights == 5)
                 {
-                    MessageBox.Show("Relative Target Return Invalid", "Fatal Error");
+                    MessageBox.Show("Relative Target Return invalide", "Fatal Error");
                     break;
                 }
                 else if (portfolio.PortfolioMatrix.InfoWeights == -108 &&
@@ -462,7 +469,12 @@ namespace GestionIndicielle.ViewModels
             bool error = checkForCorrectData();
             if (!error)
                 generateWholeWindowOnChangeBackTest(SelectedAssetsList);
-       
+
+            if (stopMessage)
+            {
+                MessageBox.Show("Les données générées avec la période d'estimation fournie étaient invalides.\n" +
+                                    "Donnée générée avec une période d'estimation de "+PeriodeEstimation, "Information");
+            }
         }
 
         private void SetUpModel()

@@ -76,7 +76,6 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Infrastrucure\ListBoxEx.cs" />
-    <Compile Include="Models\Benchmark.cs" />
     <Compile Include="Models\ErrorRatios.cs" />
     <Compile Include="Models\Portfolio.cs" />
     <Compile Include="Parser\FormatMatrix.cs" />
@@ -138,11 +137,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dlls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\design.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dlls\wre-ensimag-c-4.1.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="'$(VisualStudioVersion)' == ''" />
